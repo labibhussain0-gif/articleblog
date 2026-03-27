@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { Clock, Calendar, Heart, MessageSquare, Share2, Bookmark, Facebook, Twitter, Linkedin, Link as LinkIcon, ChevronRight } from 'lucide-react';
@@ -153,10 +153,10 @@ export default function ArticlePage() {
               );
             }
             return (
-              <>
-                <p key={index} className="text-slate-700 dark:text-slate-300 leading-relaxed mb-4">{paragraph}</p>
+              <Fragment key={index}>
+                <p className="text-slate-700 dark:text-slate-300 leading-relaxed mb-4">{paragraph}</p>
                 {index === 2 && <AdBanner slot="article-inline" format="article" className="my-8" />}
-              </>
+              </Fragment>
             );
           })}
         </div>
