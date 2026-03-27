@@ -190,11 +190,12 @@ export default function ArticlePage() {
           </div>
         </div>
 
-        {/* Ad Banner: Before Related Articles */}
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 xl:pl-24">
-          <AdBanner slot="article-bottom" format="horizontal" className="my-8" />
-        </div>
       </article>
+
+      {/* Ad Banner: Before Related Articles */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AdBanner slot="article-bottom" format="horizontal" className="my-8" />
+      </div>
 
       {/* Related Articles */}
       <section className="bg-slate-50 dark:bg-slate-800/50 py-12">
