@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import FeaturedCard from '../components/cards/FeaturedCard';
 import StandardCard from '../components/cards/StandardCard';
@@ -229,8 +229,8 @@ export default function HomePage() {
 
         {/* Category Sections */}
         {categorySections.map((section, i) => (
-          <>
-            <section key={section.name} className="mb-12">
+          <Fragment key={section.name}>
+            <section className="mb-12">
             <div className="flex items-center justify-between mb-6">
               <h2
                 className="text-2xl font-bold text-slate-900 dark:text-white"
@@ -252,14 +252,11 @@ export default function HomePage() {
             </div>
           </section>
             {i === 1 && (
-              <>
-        {/* Ad Banner: Between Category Sections */}
-        <section className="mb-12">
-          <AdBanner slot="home-category-middle" format="horizontal" />
-        </section>
-              </>
+              <section className="mb-12">
+                <AdBanner slot="home-category-middle" format="horizontal" />
+              </section>
             )}
-          </>
+          </Fragment>
         ))}
 
         {/* Editor's Picks */}
