@@ -1,5 +1,3 @@
-import { ReactNode } from 'react';
-
 type AdFormat = 'horizontal' | 'rectangle' | 'article';
 
 interface AdBannerProps {
