@@ -8,6 +8,7 @@ export default defineConfig({
   title: 'The Daily Pulse',
   projectId: 'r9p19ugf',
   dataset: 'production',
+  basePath: '/studio',
   plugins: [
     structureTool(),
     visionTool(),

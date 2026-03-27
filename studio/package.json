@@ -3,10 +3,10 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "dev": "XDG_CONFIG_HOME=/tmp/sanity_config sanity dev",
-    "build": "XDG_CONFIG_HOME=/tmp/sanity_config sanity build",
-    "deploy": "XDG_CONFIG_HOME=/tmp/sanity_config sanity deploy",
-    "deploy-graphql": "XDG_CONFIG_HOME=/tmp/sanity_config sanity graphql deploy"
+    "dev": "XDG_CONFIG_HOME=/tmp/sanity_config ./node_modules/.bin/sanity dev",
+    "build": "XDG_CONFIG_HOME=/tmp/sanity_config ./node_modules/.bin/sanity build",
+    "deploy": "XDG_CONFIG_HOME=/tmp/sanity_config ./node_modules/.bin/sanity deploy",
+    "deploy-graphql": "XDG_CONFIG_HOME=/tmp/sanity_config ./node_modules/.bin/sanity graphql deploy"
   },
   "dependencies": {
     "@sanity/vision": "^3.0.0",

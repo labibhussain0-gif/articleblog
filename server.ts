@@ -296,6 +296,13 @@ async function startServer() {
     }
   });
 
+  // Serve the Sanity Studio sub-app at /studio
+  const studioDistPath = path.join(process.cwd(), 'studio/dist');
+  app.use('/studio', express.static(studioDistPath));
+  app.get('/studio/*', (req, res) => {
+    res.sendFile(path.join(studioDistPath, 'index.html'));
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
