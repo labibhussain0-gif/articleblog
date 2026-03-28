@@ -1,7 +1,7 @@
 import { createClient } from '@sanity/client';
 import imageUrlBuilder from '@sanity/image-url';
 
-const projectId = import.meta.env.VITE_SANITY_PROJECT_ID;
+const projectId = import.meta.env.VITE_SANITY_PROJECT_ID || 'r9p19ugf';
 const dataset = import.meta.env.VITE_SANITY_DATASET || 'production';
 const apiVersion = import.meta.env.VITE_SANITY_API_VERSION || '2026-03-25';
 
