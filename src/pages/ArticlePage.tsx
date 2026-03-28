@@ -96,7 +96,7 @@ export default function ArticlePage() {
         <nav className="flex items-center gap-2 text-sm text-slate-500 mb-6">
           <Link to="/" className="hover:text-slate-900 dark:hover:text-white">Home</Link>
           <ChevronRight className="w-4 h-4" />
-          <Link to="/politics" className="hover:text-slate-900 dark:hover:text-white">{mockArticle.category.name}</Link>
+          <Link to="/category/politics" className="hover:text-slate-900 dark:hover:text-white">{mockArticle.category.name}</Link>
           <ChevronRight className="w-4 h-4" />
           <span className="text-slate-900 dark:text-white line-clamp-1">{mockArticle.title}</span>
         </nav>
