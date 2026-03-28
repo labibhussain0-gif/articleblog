@@ -159,15 +159,22 @@ async function startServer() {
   app.post('/api/v1/articles/:slug/comments', authenticateToken, async (req: any, res) => {
     try {
       const { content, parentId } = req.body;
-      const article = await prisma.article.findUnique({ where: { slug: req.params.slug } });
-      if (!article) return res.status(404).json({ error: 'Article not found' });
 
       const comment = await prisma.comment.create({
-        data: { content, articleId: article.id, authorId: req.user.id, parentId },
+        data: {
+          content,
+          author: { connect: { id: req.user.id } },
+          ...(parentId && { parent: { connect: { id: parentId } } }),
+          article: { connect: { slug: req.params.slug } }
+        },
         include: { author: { select: { username: true, name: true, avatarUrl: true } } }
       });
       res.status(201).json(comment);
-    } catch (error) {
+    } catch (error: any) {
+      if (error.code === 'P2025') {
+        return res.status(404).json({ error: 'Article not found' });
+      }
+      console.error('Error creating comment:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   });
