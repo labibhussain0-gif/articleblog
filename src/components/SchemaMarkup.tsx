@@ -21,8 +21,8 @@ export default function SchemaMarkup({
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'The Daily Pulse',
-    url: 'https://thedailypulse.com',
-    logo: { '@type': 'ImageObject', url: 'https://thedailypulse.com/logo.png' },
+    url: 'https://articleblogwebsite.web.app',
+    logo: { '@type': 'ImageObject', url: 'https://articleblogwebsite.web.app/logo.png' },
     sameAs: [
       'https://twitter.com/thedailypulse',
       'https://facebook.com/thedailypulse',
@@ -34,10 +34,10 @@ export default function SchemaMarkup({
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'The Daily Pulse',
-    url: 'https://thedailypulse.com',
+    url: 'https://articleblogwebsite.web.app',
     potentialAction: {
       '@type': 'SearchAction',
-      target: { '@type': 'EntryPoint', urlTemplate: 'https://thedailypulse.com/search?q={search_term_string}' },
+      target: { '@type': 'EntryPoint', urlTemplate: 'https://articleblogwebsite.web.app/search?q={search_term_string}' },
       'query-input': 'required name=search_term_string',
     },
   };
@@ -61,8 +61,8 @@ export default function SchemaMarkup({
     image: articleImage,
     datePublished: articlePublishedTime,
     author: { '@type': 'Person', name: articleAuthor || 'The Daily Pulse' },
-    publisher: { '@type': 'Organization', name: 'The Daily Pulse', logo: { '@type': 'ImageObject', url: 'https://thedailypulse.com/logo.png' } },
-    mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://thedailypulse.com' },
+    publisher: { '@type': 'Organization', name: 'The Daily Pulse', logo: { '@type': 'ImageObject', url: 'https://articleblogwebsite.web.app/logo.png' } },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://articleblogwebsite.web.app' },
   } : null;
 
   const schemas = [organizationSchema, websiteSchema, breadcrumbSchema, articleSchema].filter(Boolean);
