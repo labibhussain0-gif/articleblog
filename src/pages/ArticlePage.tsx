@@ -77,17 +77,17 @@ export default function ArticlePage() {
 
       {/* Floating Share Bar */}
       <div className="fixed left-8 top-1/3 z-40 hidden xl:flex flex-col gap-2">
-        <button className="p-3 rounded-full bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-shadow" title="Share on Twitter">
-          <Twitter className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+        <button className="p-3 rounded-full bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500" aria-label="Share on Twitter" title="Share on Twitter">
+          <Twitter className="w-5 h-5 text-slate-600 dark:text-slate-300" aria-hidden="true" />
         </button>
-        <button className="p-3 rounded-full bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-shadow" title="Share on Facebook">
-          <Facebook className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+        <button className="p-3 rounded-full bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500" aria-label="Share on Facebook" title="Share on Facebook">
+          <Facebook className="w-5 h-5 text-slate-600 dark:text-slate-300" aria-hidden="true" />
         </button>
-        <button className="p-3 rounded-full bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-shadow" title="Share on LinkedIn">
-          <Linkedin className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+        <button className="p-3 rounded-full bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500" aria-label="Share on LinkedIn" title="Share on LinkedIn">
+          <Linkedin className="w-5 h-5 text-slate-600 dark:text-slate-300" aria-hidden="true" />
         </button>
-        <button className="p-3 rounded-full bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-shadow" title="Copy Link">
-          <LinkIcon className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+        <button className="p-3 rounded-full bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500" aria-label="Copy Link" title="Copy Link">
+          <LinkIcon className="w-5 h-5 text-slate-600 dark:text-slate-300" aria-hidden="true" />
         </button>
       </div>
 
@@ -173,19 +173,19 @@ export default function ArticlePage() {
         {/* Actions */}
         <div className="flex items-center justify-between mt-8 pt-8 border-t border-slate-200 dark:border-slate-700">
           <div className="flex items-center gap-4">
-            <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
-              <Heart className="w-5 h-5" /> <span>{likes}</span>
+            <button aria-label="Like article" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500">
+              <Heart className="w-5 h-5" aria-hidden="true" /> <span aria-hidden="true">{likes}</span>
             </button>
-            <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
-              <MessageSquare className="w-5 h-5" /> <span>12</span>
+            <button aria-label="Comment on article" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500">
+              <MessageSquare className="w-5 h-5" aria-hidden="true" /> <span aria-hidden="true">12</span>
             </button>
           </div>
           <div className="flex items-center gap-2">
-            <button className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
-              <Bookmark className="w-5 h-5" />
+            <button aria-label="Bookmark article" className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500">
+              <Bookmark className="w-5 h-5" aria-hidden="true" />
             </button>
-            <button className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
-              <Share2 className="w-5 h-5" />
+            <button aria-label="Share article" className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500">
+              <Share2 className="w-5 h-5" aria-hidden="true" />
             </button>
           </div>
         </div>
