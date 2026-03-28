@@ -1,17 +1,18 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search as SearchIcon, X } from 'lucide-react';
+import { Search as SearchIcon, X, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
-
-const mockResults = [
-  { id: '1', title: 'Senate Passes Landmark Climate Legislation', slug: 'senate-passes-landmark-climate-legislation', excerpt: 'In a historic bipartisan vote, the Senate approved sweeping climate measures.', category: { name: 'Politics' }, author: { name: 'Sarah Chen' }, publishedAt: '2026-03-25T08:00:00Z', readTime: 8, imageUrl: 'https://picsum.photos/600/400?random=1' },
-  { id: '2', title: 'Federal Reserve Signals Potential Rate Cuts', slug: 'fed-signals-potential-rate-cuts', excerpt: 'Fed Chair Powell indicated the central bank may begin cutting interest rates.', category: { name: 'Economy' }, author: { name: 'Maria Rodriguez' }, publishedAt: '2026-03-24T15:00:00Z', readTime: 5, imageUrl: 'https://picsum.photos/600/400?random=2' },
-  { id: '3', title: 'OpenAI Unveils Next-Generation Reasoning Model', slug: 'openai-unveils-next-generation-reasoning-model', excerpt: 'The new model demonstrates unprecedented capabilities in complex problem-solving.', category: { name: 'Tech' }, author: { name: 'James Chen' }, publishedAt: '2026-03-23T10:00:00Z', readTime: 6, imageUrl: 'https://picsum.photos/600/400?random=3' },
-];
+import { useQuery } from '@tanstack/react-query';
+import { groq, urlFor } from '../lib/sanity';
 
 export default function SearchPage() {
   const [query, setQuery] = useState('');
-  const [results] = useState(mockResults);
+
+  const { data: results = [], isLoading } = useQuery({
+    queryKey: ['search', query],
+    queryFn: () => query.length > 2 ? groq.searchArticles(query) : Promise.resolve([]),
+    enabled: query.length > 2,
+  });
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -36,43 +37,61 @@ export default function SearchPage() {
           )}
         </div>
 
-        {/* Results Count */}
+        {/* Results Info */}
         <div className="mb-6">
-          <p className="text-slate-600 dark:text-slate-300">
-            {results.length} results for <span className="font-semibold text-slate-900 dark:text-white">"climate"</span>
-          </p>
+          {query.length > 2 ? (
+            <p className="text-slate-600 dark:text-slate-300">
+              {isLoading ? 'Searching...' : `${results.length} results for `}
+              <span className="font-semibold text-slate-900 dark:text-white">"{query}"</span>
+            </p>
+          ) : query.length > 0 ? (
+            <p className="text-slate-500 italic">Type at least 3 characters to search...</p>
+          ) : (
+            <p className="text-slate-500">Discover stories from across the world.</p>
+          )}
         </div>
 
         {/* Results Grid */}
         <div className="space-y-6">
-          {results.map((article) => (
-            <article key={article.id} className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-              <Link to={`/article/${article.slug}`} className="flex gap-6 p-6">
-                <img src={article.imageUrl} alt={article.title} className="w-32 h-24 object-cover rounded-lg flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="px-2 py-0.5 text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded">
-                      {article.category.name}
-                    </span>
-                    <span className="text-xs text-slate-500">{format(new Date(article.publishedAt), 'MMM d, yyyy')}</span>
+          {isLoading && (
+            <div className="flex justify-center py-12">
+              <Loader2 className="w-8 h-8 animate-spin text-red-600" />
+            </div>
+          )}
+
+          {!isLoading && results.map((article: any) => {
+            const imgUrl = article.coverImage ? urlFor(article.coverImage).url() : `https://picsum.photos/600/400?random=${article._id}`;
+            return (
+              <article key={article._id} className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                <Link to={`/article/${article.slug?.current}`} className="flex flex-col sm:flex-row gap-6 p-6">
+                  <img src={imgUrl} alt={article.title} className="w-full sm:w-32 h-48 sm:h-24 object-cover rounded-lg flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-2">
+                      {article.category && (
+                        <span className="px-2 py-0.5 text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded">
+                          {article.category.name}
+                        </span>
+                      )}
+                      <span className="text-xs text-slate-500">{format(new Date(article.publishedAt || Date.now()), 'MMM d, yyyy')}</span>
+                    </div>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 line-clamp-1" style={{ fontFamily: 'var(--font-heading)' }}>
+                      {article.title}
+                    </h3>
+                    <p className="text-slate-600 dark:text-slate-300 text-sm line-clamp-2">{article.excerpt}</p>
+                    <div className="flex items-center gap-2 mt-2 text-xs text-slate-500">
+                      <span>By {article.author?.name || 'Unknown'}</span>
+                      <span>•</span>
+                      <span>{article.readingTime || 5} min read</span>
+                    </div>
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 line-clamp-1" style={{ fontFamily: 'var(--font-heading)' }}>
-                    {article.title}
-                  </h3>
-                  <p className="text-slate-600 dark:text-slate-300 text-sm line-clamp-2">{article.excerpt}</p>
-                  <div className="flex items-center gap-2 mt-2 text-xs text-slate-500">
-                    <span>By {article.author.name}</span>
-                    <span>•</span>
-                    <span>{article.readTime} min read</span>
-                  </div>
-                </div>
-              </Link>
-            </article>
-          ))}
+                </Link>
+              </article>
+            );
+          })}
         </div>
 
         {/* No Results State */}
-        {results.length === 0 && (
+        {!isLoading && query.length > 2 && results.length === 0 && (
           <div className="text-center py-16">
             <SearchIcon className="w-16 h-16 mx-auto text-slate-300 mb-4" />
             <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">No results found</h3>
