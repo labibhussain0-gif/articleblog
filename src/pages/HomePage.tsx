@@ -1,105 +1,12 @@
 import { useState, Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import FeaturedCard from '../components/cards/FeaturedCard';
 import StandardCard from '../components/cards/StandardCard';
 import CompactCard from '../components/cards/CompactCard';
-import { ArrowRight, Mail } from 'lucide-react';
+import { ArrowRight, Mail, Loader2 } from 'lucide-react';
 import AdBanner from '../components/ads/AdBanner';
-
-const featuredArticle = {
-  id: '1',
-  slug: 'breaking-global-summit-2026',
-  title: 'World Leaders Convene for Historic Climate Summit in Geneva',
-  excerpt: 'Heads of state from 195 nations gather to finalize binding emissions targets, marking a pivotal moment in the fight against climate change.',
-  category: { name: 'Politics' },
-  author: { name: 'Sarah Mitchell', avatarUrl: 'https://i.pravatar.cc/100?img=1' },
-  publishedAt: '2026-03-25T08:00:00Z',
-  readTime: 8,
-  imageUrl: 'https://picsum.photos/1200/600?random=1',
-};
-
-const latestArticles = [
-  {
-    id: '2',
-    slug: 'tech-giants-ai-regulation',
-    title: 'Silicon Valley Titans Scramble to Shape AI Legislation',
-    excerpt: 'Major tech companies deploy lobbying armies as Congress prepares sweeping artificial intelligence regulations.',
-    category: { name: 'Tech' },
-    author: { name: 'James Chen', avatarUrl: 'https://i.pravatar.cc/100?img=2' },
-    publishedAt: '2026-03-25T06:30:00Z',
-    readTime: 6,
-    imageUrl: 'https://picsum.photos/600/400?random=2',
-  },
-  {
-    id: '3',
-    slug: 'fed-interest-rates',
-    title: 'Federal Reserve Signals Potential Rate Cuts Amid Economic Uncertainty',
-    excerpt: 'Markets rally as Fed chair hints at policy shift in response to cooling inflation data.',
-    category: { name: 'Economy' },
-    author: { name: 'Maria Rodriguez', avatarUrl: 'https://i.pravatar.cc/100?img=3' },
-    publishedAt: '2026-03-24T15:00:00Z',
-    readTime: 5,
-    imageUrl: 'https://picsum.photos/600/400?random=3',
-  },
-  {
-    id: '4',
-    slug: 'oscars-nominations-preview',
-    title: "Award Season Frontrunners: A Deep Dive Into This Year's Contenders",
-    excerpt: 'Industry insiders weigh in on the films and performances generating the most buzz.',
-    category: { name: 'Culture' },
-    author: { name: 'Emily Watson', avatarUrl: 'https://i.pravatar.cc/100?img=4' },
-    publishedAt: '2026-03-24T12:00:00Z',
-    readTime: 7,
-    imageUrl: 'https://picsum.photos/600/400?random=4',
-  },
-];
-
-const noteworthyReads = [
-  { id: '5', slug: 'article-5', title: 'The Hidden Costs of Fast Fashion', category: { name: 'Culture' }, author: { name: 'Alex Turner' }, publishedAt: '2026-03-24T10:00:00Z', readTime: 4 },
-  { id: '6', slug: 'article-6', title: 'Electric Vehicle Sales Surge in Developing Markets', category: { name: 'Tech' }, author: { name: 'Priya Sharma' }, publishedAt: '2026-03-23T14:00:00Z', readTime: 5 },
-  { id: '7', slug: 'article-7', title: 'Central Bank Digital Currencies Gain Momentum', category: { name: 'Economy' }, author: { name: 'David Kim' }, publishedAt: '2026-03-23T09:00:00Z', readTime: 6 },
-  { id: '8', slug: 'article-8', title: 'Space Tourism Industry Faces Regulatory Crossroads', category: { name: 'Tech' }, author: { name: 'Lisa Park' }, publishedAt: '2026-03-22T16:00:00Z', readTime: 5 },
-  { id: '9', slug: 'article-9', title: 'The Rise of Plant-Based Proteins in Global Cuisine', category: { name: 'Culture' }, author: { name: 'Marco Bellini' }, publishedAt: '2026-03-22T11:00:00Z', readTime: 4 },
-];
-
-const categorySections = [
-  {
-    name: 'Politics',
-    href: '/category/politics',
-    articles: [
-      { id: '10', slug: 'article-10', title: 'Election Reform Bills Gain Bipartisan Support', excerpt: 'Rare collaboration emerges as lawmakers seek to address voting access concerns.', category: { name: 'Politics' }, author: { name: 'Robert Hayes', avatarUrl: 'https://i.pravatar.cc/100?img=5' }, publishedAt: '2026-03-25T07:00:00Z', readTime: 6, imageUrl: 'https://picsum.photos/600/400?random=10' },
-      { id: '11', slug: 'article-11', title: 'International Trade Agreements Face Scrutiny', excerpt: 'New tariffs spark diplomatic tensions among allied nations.', category: { name: 'Politics' }, author: { name: 'Jennifer Cole', avatarUrl: 'https://i.pravatar.cc/100?img=6' }, publishedAt: '2026-03-24T18:00:00Z', readTime: 5, imageUrl: 'https://picsum.photos/600/400?random=11' },
-      { id: '12', slug: 'article-12', title: 'Defense Budget Debates Heat Up in Capitol', excerpt: 'Lawmakers grapple with modernizing military capabilities.', category: { name: 'Politics' }, author: { name: 'Michael Torres', avatarUrl: 'https://i.pravatar.cc/100?img=7' }, publishedAt: '2026-03-24T13:00:00Z', readTime: 4, imageUrl: 'https://picsum.photos/600/400?random=12' },
-    ],
-  },
-  {
-    name: 'Economy',
-    href: '/category/economy',
-    articles: [
-      { id: '13', slug: 'article-13', title: 'Tech IPO Market Shows Signs of Revival', excerpt: 'After a prolonged downturn, investors eye promising public offerings.', category: { name: 'Economy' }, author: { name: 'Sandra Liu', avatarUrl: 'https://i.pravatar.cc/100?img=8' }, publishedAt: '2026-03-25T05:00:00Z', readTime: 5, imageUrl: 'https://picsum.photos/600/400?random=13' },
-      { id: '14', slug: 'article-14', title: 'Global Supply Chains Adapt to New Realities', excerpt: 'Companies prioritize resilience over efficiency in post-pandemic era.', category: { name: 'Economy' }, author: { name: 'Thomas Wright', avatarUrl: 'https://i.pravatar.cc/100?img=9' }, publishedAt: '2026-03-24T11:00:00Z', readTime: 7, imageUrl: 'https://picsum.photos/600/400?random=14' },
-      { id: '15', slug: 'article-15', title: 'Housing Market Stabilizes After Volatile Year', excerpt: 'Buyers and sellers find new equilibrium in residential real estate.', category: { name: 'Economy' }, author: { name: 'Amanda Foster', avatarUrl: 'https://i.pravatar.cc/100?img=10' }, publishedAt: '2026-03-23T16:00:00Z', readTime: 4, imageUrl: 'https://picsum.photos/600/400?random=15' },
-    ],
-  },
-  {
-    name: 'Culture',
-    href: '/category/culture',
-    articles: [
-      { id: '16', slug: 'article-16', title: 'Streaming Wars Intensify With New Content Deals', excerpt: 'Major platforms battle for exclusive programming rights.', category: { name: 'Culture' }, author: { name: 'Nathan Brooks', avatarUrl: 'https://i.pravatar.cc/100?img=11' }, publishedAt: '2026-03-25T09:00:00Z', readTime: 5, imageUrl: 'https://picsum.photos/600/400?random=16' },
-      { id: '17', slug: 'article-17', title: 'Museums Embrace Digital Art in Post-Pandemic Era', excerpt: 'Traditional institutions find balance between physical and virtual experiences.', category: { name: 'Culture' }, author: { name: 'Olivia Martinez', avatarUrl: 'https://i.pravatar.cc/100?img=12' }, publishedAt: '2026-03-24T14:00:00Z', readTime: 6, imageUrl: 'https://picsum.photos/600/400?random=17' },
-      { id: '18', slug: 'article-18', title: 'CulinaryScene: Chefs Redefine Farm-to-Table Dining', excerpt: 'Innovative restaurants push sustainability to new heights.', category: { name: 'Culture' }, author: { name: 'Daniel Green', avatarUrl: 'https://i.pravatar.cc/100?img=13' }, publishedAt: '2026-03-23T17:00:00Z', readTime: 4, imageUrl: 'https://picsum.photos/600/400?random=18' },
-    ],
-  },
-  {
-    name: 'Tech',
-    href: '/category/tech',
-    articles: [
-      { id: '19', slug: 'article-19', title: 'Quantum Computing Reaches New Milestone', excerpt: 'Breakthrough promises to revolutionize cryptography and drug discovery.', category: { name: 'Tech' }, author: { name: 'Rachel Ng', avatarUrl: 'https://i.pravatar.cc/100?img=14' }, publishedAt: '2026-03-25T04:00:00Z', readTime: 8, imageUrl: 'https://picsum.photos/600/400?random=19' },
-      { id: '20', slug: 'article-20', title: 'Cybersecurity Experts Warn of Sophisticated New Threats', excerpt: 'Nation-state hackers deploy advanced techniques targeting critical infrastructure.', category: { name: 'Tech' }, author: { name: 'Kevin Zhang', avatarUrl: 'https://i.pravatar.cc/100?img=15' }, publishedAt: '2026-03-24T20:00:00Z', readTime: 6, imageUrl: 'https://picsum.photos/600/400?random=20' },
-      { id: '21', slug: 'article-21', title: 'The Future of Work: Remote Collaboration Tools Evolve', excerpt: 'Next-generation platforms promise to transform distributed teams.', category: { name: 'Tech' }, author: { name: 'Sophie Anderson', avatarUrl: 'https://i.pravatar.cc/100?img=16' }, publishedAt: '2026-03-23T15:00:00Z', readTime: 5, imageUrl: 'https://picsum.photos/600/400?random=21' },
-    ],
-  },
-];
+import { groq, urlFor } from '../lib/sanity';
 
 function NewsletterForm() {
   const [email, setEmail] = useState('');
@@ -142,12 +49,61 @@ function NewsletterForm() {
 }
 
 export default function HomePage() {
+  const { data: articles = [], isLoading: loadingArticles } = useQuery({
+    queryKey: ['articles'],
+    queryFn: groq.getAllArticles,
+  });
+
+  const { data: categories = [], isLoading: loadingCategories } = useQuery({
+    queryKey: ['categories'],
+    queryFn: groq.getAllCategories,
+  });
+
+  if (loadingArticles || loadingCategories) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-red-600" />
+      </div>
+    );
+  }
+
+  const mapArticle = (a: any) => ({
+    id: a._id,
+    slug: a.slug?.current || '',
+    title: a.title,
+    excerpt: a.excerpt,
+    category: { name: a.category?.name || 'Uncategorized', color: a.category?.color },
+    author: { 
+      name: a.author?.name || 'Unknown User', 
+      avatarUrl: a.author?.avatar ? urlFor(a.author.avatar).url() : `https://ui-avatars.com/api/?name=${encodeURIComponent(a.author?.name || 'U')}&background=random` 
+    },
+    publishedAt: a.publishedAt || new Date().toISOString(),
+    readTime: a.readingTime || 5,
+    imageUrl: a.coverImage ? urlFor(a.coverImage).url() : undefined,
+  });
+
+  const mappedArticles = articles.map(mapArticle);
+
+  const featuredArticle = mappedArticles[0];
+  const latestArticles = mappedArticles.slice(1, 4);
+  const noteworthyReads = mappedArticles.slice(4, 9);
+  
+  const categorySections = categories.map(cat => {
+    const catArticles = mappedArticles.filter(a => a.category?.name === cat.name).slice(0, 3);
+    return {
+      name: cat.name,
+      href: `/category/${cat.slug.current}`,
+      articles: catArticles
+    };
+  }).filter(section => section.articles.length > 0);
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         {/* Hero Section: Featured + Latest */}
-        <section className="mb-12">
+        {featuredArticle && (
+          <section className="mb-12">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
               <FeaturedCard article={featuredArticle} />
@@ -166,6 +122,7 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+        )}
 
         {/* Ad Banner: After Hero */}
         <section className="mb-12">
