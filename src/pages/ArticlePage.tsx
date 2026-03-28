@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect, useMemo, Fragment } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { Clock, Calendar, Heart, MessageSquare, Share2, Bookmark, Facebook, Twitter, Linkedin, Link as LinkIcon, ChevronRight } from 'lucide-react';
@@ -64,6 +64,31 @@ export default function ArticlePage() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const parsedContent = useMemo(() => {
+    return mockArticle.content.split('\n\n').map((paragraph, index) => {
+      if (paragraph.startsWith('## ')) {
+        return <h2 key={index} className="text-2xl font-bold text-slate-900 dark:text-white mt-8 mb-4" style={{ fontFamily: 'var(--font-heading)' }}>{paragraph.replace('## ', '')}</h2>;
+      }
+      if (paragraph.startsWith('> ')) {
+        return <blockquote key={index} className="border-l-4 border-red-600 pl-6 py-2 my-6 italic text-slate-700 dark:text-slate-300">{paragraph.replace('> ', '')}</blockquote>;
+      }
+      if (paragraph.startsWith('- ')) {
+        const items = paragraph.split('\n').filter(line => line.startsWith('- '));
+        return (
+          <ul key={index} className="list-disc list-outside ml-6 my-4 space-y-2 text-slate-700 dark:text-slate-300">
+            {items.map((item, i) => <li key={i}>{item.replace('- ', '').replace(/\*\*(.*?)\*\*/g, '$1')}</li>)}
+          </ul>
+        );
+      }
+      return (
+        <Fragment key={index}>
+          <p className="text-slate-700 dark:text-slate-300 leading-relaxed mb-4">{paragraph}</p>
+          {index === 2 && <AdBanner slot="article-inline" format="article" className="my-8" />}
+        </Fragment>
+      );
+    });
+  }, [mockArticle.content]);
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
@@ -137,28 +162,7 @@ export default function ArticlePage() {
 
         {/* Article Body */}
         <div className="prose prose-lg dark:prose-invert max-w-none">
-          {mockArticle.content.split('\n\n').map((paragraph, index) => {
-            if (paragraph.startsWith('## ')) {
-              return <h2 key={index} className="text-2xl font-bold text-slate-900 dark:text-white mt-8 mb-4" style={{ fontFamily: 'var(--font-heading)' }}>{paragraph.replace('## ', '')}</h2>;
-            }
-            if (paragraph.startsWith('> ')) {
-              return <blockquote key={index} className="border-l-4 border-red-600 pl-6 py-2 my-6 italic text-slate-700 dark:text-slate-300">{paragraph.replace('> ', '')}</blockquote>;
-            }
-            if (paragraph.startsWith('- ')) {
-              const items = paragraph.split('\n').filter(line => line.startsWith('- '));
-              return (
-                <ul key={index} className="list-disc list-outside ml-6 my-4 space-y-2 text-slate-700 dark:text-slate-300">
-                  {items.map((item, i) => <li key={i}>{item.replace('- ', '').replace(/\*\*(.*?)\*\*/g, '$1')}</li>)}
-                </ul>
-              );
-            }
-            return (
-              <Fragment key={index}>
-                <p className="text-slate-700 dark:text-slate-300 leading-relaxed mb-4">{paragraph}</p>
-                {index === 2 && <AdBanner slot="article-inline" format="article" className="my-8" />}
-              </Fragment>
-            );
-          })}
+          {parsedContent}
         </div>
 
         {/* Tags */}
