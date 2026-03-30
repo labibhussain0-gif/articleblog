@@ -136,6 +136,7 @@ export default function CategoryPage() {
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
               className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 disabled:opacity-50"
+              aria-label="Previous page"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
@@ -156,6 +157,7 @@ export default function CategoryPage() {
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
               className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 disabled:opacity-50"
+              aria-label="Next page"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
