@@ -36,7 +36,7 @@ export default function AuthorPage() {
     );
   }
 
-  const avatarUrl = author.avatar ? urlFor(author.avatar).url() : `https://ui-avatars.com/api/?name=${encodeURIComponent(author.name || 'U')}&background=random`;
+  const avatarUrl = (author.avatar?.asset || author.avatar?._ref) ? urlFor(author.avatar).url() : `https://ui-avatars.com/api/?name=${encodeURIComponent(author.name || 'U')}&background=random`;
   
   // Calculate total read time or we can use fake stats for total reads
   const totalArticles = articles.length;
@@ -109,10 +109,12 @@ export default function AuthorPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {articles.map((article: any) => {
-              const imgUrl = article.coverImage ? urlFor(article.coverImage).url() : `https://picsum.photos/600/400?random=${article._id}`;
+              const imgUrl = (article.coverImage?.asset || article.coverImage?._ref) 
+                ? urlFor(article.coverImage).url() 
+                : `https://picsum.photos/600/400?random=${article._id}`;
               return (
                 <article key={article._id} className="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
-                  <Link to={`/article/${article.slug?.current}`} className="block">
+                  <Link to={`/article/${article.slug?.current || '#'}`} className="block">
                     <div className="relative aspect-[16/10] overflow-hidden">
                       <img src={imgUrl} alt={article.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                     </div>
