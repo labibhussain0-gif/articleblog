@@ -15,7 +15,15 @@ export const sanityClient = createClient({
 
 const builder = imageUrlBuilder(sanityClient);
 
-export function urlFor(source: SanityImageSource): { url: () => string; width: (w: number) => { url: () => string }; height: (h: number) => { url: () => string } } {
+export function urlFor(source: any): any {
+  if (!source || !source.asset) {
+    // Return a dummy object that behaves like the builder but returns a placeholder
+    return {
+      url: () => "https://picsum.photos/800/600?grayscale",
+      width: () => ({ url: () => "https://picsum.photos/800/600?grayscale" }),
+      height: () => ({ url: () => "https://picsum.photos/800/600?grayscale" }),
+    };
+  }
   return builder.image(source);
 }
 
