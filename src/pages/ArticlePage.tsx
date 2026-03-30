@@ -54,8 +54,8 @@ export default function ArticlePage() {
   // Filter out the current article from related articles
   const filteredRelated = relatedArticles.filter(a => a._id !== article._id).slice(0, 3);
   
-  const coverImageUrl = article.coverImage ? urlFor(article.coverImage).url() : undefined;
-  const authorAvatarUrl = article.author?.avatar ? urlFor(article.author.avatar).url() : `https://ui-avatars.com/api/?name=${encodeURIComponent(article.author?.name || 'U')}&background=random`;
+  const coverImageUrl = (article.coverImage?.asset || article.coverImage?._ref) ? urlFor(article.coverImage).url() : undefined;
+  const authorAvatarUrl = (article.author?.avatar?.asset || article.author?.avatar?._ref) ? urlFor(article.author.avatar).url() : `https://ui-avatars.com/api/?name=${encodeURIComponent(article.author?.name || 'U')}&background=random`;
   
   const portableTextComponents = {
     block: {
@@ -105,7 +105,7 @@ export default function ArticlePage() {
           <ChevronRight className="w-4 h-4" />
           {article.category && (
             <>
-              <Link to={`/category/${article.category.slug?.current}`} className="hover:text-slate-900 dark:hover:text-white">{article.category.name}</Link>
+              <Link to={`/category/${article.category.slug?.current || '#'}`} className="hover:text-slate-900 dark:hover:text-white">{article.category.name}</Link>
               <ChevronRight className="w-4 h-4" />
             </>
           )}
@@ -129,7 +129,7 @@ export default function ArticlePage() {
 
           {/* Author & Meta */}
           <div className="flex items-center justify-between">
-            <Link to={`/author/${article.author?.slug?.current}`} className="flex items-center gap-4">
+            <Link to={`/author/${article.author?.slug?.current || '#'}`} className="flex items-center gap-4">
               <img src={authorAvatarUrl} alt={article.author?.name} className="w-12 h-12 rounded-full object-cover" />
               <div>
                 <p className="font-semibold text-slate-900 dark:text-white">{article.author?.name}</p>
@@ -205,9 +205,11 @@ export default function ArticlePage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {filteredRelated.map((relatedArticle: any) => {
-                const imgUrl = relatedArticle.coverImage ? urlFor(relatedArticle.coverImage).url() : `https://picsum.photos/600/400?random=${relatedArticle._id}`;
+                const imgUrl = (relatedArticle.coverImage?.asset || relatedArticle.coverImage?._ref) 
+                  ? urlFor(relatedArticle.coverImage).url() 
+                  : `https://picsum.photos/600/400?random=${relatedArticle._id}`;
                 return (
-                  <Link key={relatedArticle._id} to={`/article/${relatedArticle.slug?.current}`} className="group relative">
+                  <Link key={relatedArticle._id} to={`/article/${relatedArticle.slug?.current || '#'}`} className="group relative">
                     <div className="aspect-[3/2] rounded-xl overflow-hidden mb-4">
                       <img
                         src={imgUrl}
