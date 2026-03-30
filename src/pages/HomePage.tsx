@@ -69,17 +69,24 @@ export default function HomePage() {
 
   const mapArticle = (a: any) => ({
     id: a._id,
-    slug: a.slug?.current || '',
-    title: a.title,
-    excerpt: a.excerpt,
-    category: { name: a.category?.name || 'Uncategorized', color: a.category?.color },
+    slug: a.slug?.current || 'untitled',
+    title: a.title || 'Untitled Article',
+    excerpt: a.excerpt || 'No excerpt available.',
+    category: { 
+      name: a.category?.name || 'Uncategorized', 
+      color: a.category?.color || '#3b82f6' 
+    },
     author: { 
-      name: a.author?.name || 'Unknown User', 
-      avatarUrl: a.author?.avatar ? urlFor(a.author.avatar).url() : `https://ui-avatars.com/api/?name=${encodeURIComponent(a.author?.name || 'U')}&background=random` 
+      name: a.author?.name || 'The Daily Pulse Team', 
+      avatarUrl: (a.author?.avatar?.asset || a.author?.avatar?._ref) 
+        ? urlFor(a.author.avatar).url() 
+        : `https://ui-avatars.com/api/?name=${encodeURIComponent(a.author?.name || 'U')}&background=random` 
     },
     publishedAt: a.publishedAt || new Date().toISOString(),
     readTime: a.readingTime || 5,
-    imageUrl: a.coverImage ? urlFor(a.coverImage).url() : undefined,
+    imageUrl: (a.coverImage?.asset || a.coverImage?._ref) 
+      ? urlFor(a.coverImage).url() 
+      : `https://picsum.photos/1200/600?random=${a._id}`,
   });
 
   const mappedArticles = articles.map(mapArticle);
@@ -89,13 +96,14 @@ export default function HomePage() {
   const noteworthyReads = mappedArticles.slice(4, 9);
   
   const categorySections = categories.map(cat => {
+    if (!cat || !cat.name) return null;
     const catArticles = mappedArticles.filter(a => a.category?.name === cat.name).slice(0, 3);
     return {
       name: cat.name,
-      href: `/category/${cat.slug.current}`,
+      href: `/category/${cat.slug?.current || cat.name.toLowerCase()}`,
       articles: catArticles
     };
-  }).filter(section => section.articles.length > 0);
+  }).filter((section): section is any => section !== null && section.articles.length > 0);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
