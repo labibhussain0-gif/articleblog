@@ -1,18 +1,36 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Search, Menu, X } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { groq } from '../../lib/sanity';
 
-const navLinks = [
+const fallbackNavLinks = [
   { name: 'Politics', href: '/category/politics' },
   { name: 'Economy', href: '/category/economy' },
   { name: 'Culture', href: '/category/culture' },
-  { name: 'Tech', href: '/category/tech' },
+  { name: 'Technology', href: '/category/technology' },
 ];
 
 export default function StickyHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+
+  const { data: categories } = useQuery({
+    queryKey: ['nav-categories'],
+    queryFn: groq.getAllCategories,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+  });
+
+  const navLinks = useMemo(() => {
+    if (categories && categories.length > 0) {
+      return categories.map(cat => ({
+        name: cat.name || 'Uncategorized',
+        href: `/category/${cat.slug?.current || cat.name?.toLowerCase() || 'uncategorized'}`,
+      }));
+    }
+    return fallbackNavLinks;
+  }, [categories]);
 
   useEffect(() => {
     const handleScroll = () => {
