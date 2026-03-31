@@ -101,8 +101,8 @@ export async function query<T>(query: string, params?: Record<string, unknown>):
 }
 
 export async function queryOne<T>(query: string, params?: Record<string, unknown>): Promise<T | null> {
-  const results = await sanityClient.fetch<T[]>(query, params || {});
-  return results[0] || null;
+  const result = await sanityClient.fetch<T | null>(query, params || {});
+  return result || null;
 }
 
 export const groq = {
