@@ -39,7 +39,8 @@ export default function StickyHeader() {
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="md:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
-            aria-label="Toggle menu"
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isMobileMenuOpen}
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -75,6 +76,7 @@ export default function StickyHeader() {
             <div className="relative">
               <input
                 type="search"
+                aria-label="Search articles"
                 placeholder="Search articles..."
                 className="w-48 lg:w-64 px-4 py-2 pl-10 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 transition-all"
               />
@@ -104,6 +106,7 @@ export default function StickyHeader() {
               <div className="relative">
                 <input
                   type="search"
+                  aria-label="Search articles"
                   placeholder="Search articles..."
                   className="w-full px-4 py-3 pl-10 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
                 />

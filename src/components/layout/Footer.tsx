@@ -67,6 +67,7 @@ export default function Footer() {
               <form onSubmit={handleSubscribe} className="flex gap-3 w-full md:w-auto">
                 <input
                   type="email"
+                  aria-label="Email address for newsletter"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
