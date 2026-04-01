@@ -60,11 +60,31 @@ export default function ArticlePage() {
   const portableTextComponents = {
     block: {
       h1: ({children}: any) => <h1 className="text-4xl font-bold mt-8 mb-4">{children}</h1>,
-      h2: ({children}: any) => <h2 className="text-3xl font-bold mt-8 mb-4">{children}</h2>,
+      h2: ({children}: any) => <h2 className="text-2xl font-bold mt-10 mb-4 pt-6 border-t border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">{children}</h2>,
       h3: ({children}: any) => <h3 className="text-2xl font-bold mt-6 mb-3">{children}</h3>,
       h4: ({children}: any) => <h4 className="text-xl font-bold mt-6 mb-3">{children}</h4>,
-      normal: ({children}: any) => <p className="text-slate-700 dark:text-slate-300 leading-relaxed mb-4">{children}</p>,
+      normal: ({children}: any) => <p className="text-slate-700 dark:text-slate-300 text-[1.05rem] leading-[1.875] mb-6">{children}</p>,
       blockquote: ({children}: any) => <blockquote className="border-l-4 border-red-600 pl-6 py-2 my-6 italic text-slate-700 dark:text-slate-300">{children}</blockquote>,
+    },
+    types: {
+      image: ({ value }: any) => {
+        const src = (value?.asset || value?._ref) ? urlFor(value).url() : null;
+        if (!src) return null;
+        return (
+          <figure className="my-8">
+            <img
+              src={src}
+              alt={value?.alt || ''}
+              className="w-full rounded-xl object-cover"
+            />
+            {value?.caption && (
+              <figcaption className="mt-2 text-sm text-center text-slate-500 dark:text-slate-400 italic">
+                {value.caption}
+              </figcaption>
+            )}
+          </figure>
+        );
+      },
     },
     list: {
       bullet: ({children}: any) => <ul className="list-disc list-outside ml-6 my-4 space-y-2 text-slate-700 dark:text-slate-300">{children}</ul>,
@@ -98,7 +118,9 @@ export default function ArticlePage() {
         </button>
       </div>
 
-      <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 xl:pl-24 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="lg:grid lg:grid-cols-[1fr_320px] lg:gap-10 xl:gap-14">
+          <article>
         {/* Breadcrumbs */}
         <nav className="flex items-center gap-2 text-sm text-slate-500 mb-6">
           <Link to="/" className="hover:text-slate-900 dark:hover:text-white">Home</Link>
@@ -145,7 +167,16 @@ export default function ArticlePage() {
         {/* Cover Image */}
         {coverImageUrl && (
           <figure className="mb-10">
-            <img src={coverImageUrl} alt={article.title} className="w-full aspect-[21/9] object-cover rounded-2xl" />
+            <img
+              src={coverImageUrl}
+              alt={article.coverImage?.alt || article.title}
+              className="w-full aspect-[16/9] object-cover rounded-xl"
+            />
+            {article.coverImage?.caption && (
+              <figcaption className="mt-2 text-sm text-center text-slate-500 dark:text-slate-400 italic">
+                {article.coverImage.caption}
+              </figcaption>
+            )}
           </figure>
         )}
 
@@ -189,7 +220,58 @@ export default function ArticlePage() {
           </div>
         </div>
 
-      </article>
+          </article>
+
+          {/* RIGHT: Sidebar (hidden on mobile) */}
+          <aside className="hidden lg:block">
+            <div className="sticky top-24 space-y-8">
+              {/* Ad slot */}
+              <AdBanner slot="article-sidebar" format="horizontal" />
+
+              {/* Related Articles — compact list */}
+              {filteredRelated.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-bold uppercase tracking-widest text-slate-500 mb-4 border-b border-slate-200 dark:border-slate-700 pb-2">
+                    Related
+                  </h3>
+                  <ul className="space-y-4">
+                    {filteredRelated.map((r: any) => {
+                      const rImg = (r.coverImage?.asset || r.coverImage?._ref)
+                        ? urlFor(r.coverImage).width(160).height(112).url()
+                        : `https://picsum.photos/160/112?random=${r._id}`;
+                      return (
+                        <li key={r._id}>
+                          <Link to={`/article/${r.slug?.current || '#'}`} className="group flex gap-3">
+                            <img src={rImg} alt={r.title} className="w-20 h-14 object-cover rounded flex-shrink-0" />
+                            <p className="text-sm font-semibold line-clamp-3 group-hover:text-red-600 transition-colors text-slate-700 dark:text-slate-300">
+                              {r.title}
+                            </p>
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )}
+
+              {/* Tags cloud */}
+              {article.tags && article.tags.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-bold uppercase tracking-widest text-slate-500 mb-3 border-b border-slate-200 dark:border-slate-700 pb-2">Topics</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {article.tags.map((tag: any) => (
+                      <span key={tag._id || tag.name} className="px-2 py-1 text-xs bg-slate-100 dark:bg-slate-800 rounded-full text-slate-600 dark:text-slate-300">
+                        {tag.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </aside>
+
+        </div>
+      </div>
 
       {/* Ad Banner: Before Related Articles */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
