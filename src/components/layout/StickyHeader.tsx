@@ -94,6 +94,7 @@ export default function StickyHeader() {
               <input
                 type="search"
                 placeholder="Search articles..."
+                aria-label="Search articles"
                 className="w-48 lg:w-64 px-4 py-2 pl-10 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 transition-all"
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -123,6 +124,7 @@ export default function StickyHeader() {
                 <input
                   type="search"
                   placeholder="Search articles..."
+                  aria-label="Search articles"
                   className="w-full px-4 py-3 pl-10 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
                 />
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
