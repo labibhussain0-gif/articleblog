@@ -1,7 +1,7 @@
 import { useState, useEffect, Fragment } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { format } from 'date-fns';
-import { Clock, Calendar, Heart, MessageSquare, Share2, Bookmark, Facebook, Twitter, Linkedin, Link as LinkIcon, ChevronRight, Loader2 } from 'lucide-react';
+import { Clock, Calendar, Heart, MessageSquare, Share2, Bookmark, ChevronRight, Loader2 } from 'lucide-react';
 import AdBanner from '../components/ads/AdBanner';
 import { useQuery } from '@tanstack/react-query';
 import { PortableText } from '@portabletext/react';
@@ -100,22 +100,6 @@ export default function ArticlePage() {
           className="h-full bg-red-600 transition-all duration-150"
           style={{ width: `${readProgress}%` }}
         />
-      </div>
-
-      {/* Floating Share Bar */}
-      <div className="fixed left-8 top-1/3 z-40 hidden xl:flex flex-col gap-2">
-        <button className="p-3 rounded-full bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-shadow" title="Share on Twitter">
-          <Twitter className="w-5 h-5 text-slate-600 dark:text-slate-300" />
-        </button>
-        <button className="p-3 rounded-full bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-shadow" title="Share on Facebook">
-          <Facebook className="w-5 h-5 text-slate-600 dark:text-slate-300" />
-        </button>
-        <button className="p-3 rounded-full bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-shadow" title="Share on LinkedIn">
-          <Linkedin className="w-5 h-5 text-slate-600 dark:text-slate-300" />
-        </button>
-        <button className="p-3 rounded-full bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-shadow" title="Copy Link">
-          <LinkIcon className="w-5 h-5 text-slate-600 dark:text-slate-300" />
-        </button>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Twitter, Instagram, Youtube, Linkedin } from 'lucide-react';
 import { useState } from 'react';
+import { subscribeEmail } from '../../lib/firebase';
 
 const categories = [
   { name: 'Politics', href: '/category/politics' },
@@ -15,8 +15,6 @@ const categories = [
 const quickLinks = [
   { name: 'About Us', href: '/about' },
   { name: 'Contact', href: '/contact' },
-  { name: 'Careers', href: '/careers' },
-  { name: 'Advertise', href: '/advertise' },
 ];
 
 const legal = [
@@ -25,21 +23,18 @@ const legal = [
   { name: 'Cookie Policy', href: '/cookies' },
 ];
 
-const socialLinks = [
-  { name: 'Facebook', icon: Facebook, href: 'https://facebook.com' },
-  { name: 'Twitter', icon: Twitter, href: 'https://twitter.com' },
-  { name: 'Instagram', icon: Instagram, href: 'https://instagram.com' },
-  { name: 'YouTube', icon: Youtube, href: 'https://youtube.com' },
-  { name: 'LinkedIn', icon: Linkedin, href: 'https://linkedin.com' },
-];
-
 export default function Footer() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
+      try {
+        await subscribeEmail(email, 'footer');
+      } catch (error) {
+        console.error('Failed to subscribe:', error);
+      }
       setSubscribed(true);
       setEmail('');
     }
@@ -120,25 +115,6 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
-
-          {/* Connect */}
-          <div>
-            <h4 className="text-white font-semibold mb-4">Connect</h4>
-            <div className="flex gap-4">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.name}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors"
-                  aria-label={social.name}
-                >
-                  <social.icon className="w-5 h-5" />
-                </a>
-              ))}
-            </div>
           </div>
 
           {/* Legal */}

@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Search as SearchIcon, X, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useQuery } from '@tanstack/react-query';
 import { groq, urlFor } from '../lib/sanity';
 
 export default function SearchPage() {
-  const [query, setQuery] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [query, setQuery] = useState(searchParams.get('q') || '');
 
   const { data: results = [], isLoading } = useQuery({
     queryKey: ['search', query],
@@ -15,7 +16,7 @@ export default function SearchPage() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+    <div className="min-h-screen bg-white dark:bg-slate-900">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Search Input */}
         <div className="relative mb-8">
@@ -23,13 +24,16 @@ export default function SearchPage() {
           <input
             type="search"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setSearchParams(e.target.value ? { q: e.target.value } : {});
+            }}
             placeholder="Search articles, topics, authors..."
             className="w-full pl-12 pr-12 py-4 text-lg rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500"
           />
           {query && (
             <button
-              onClick={() => setQuery('')}
+              onClick={() => { setQuery(''); setSearchParams({}); }}
               className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700"
             >
               <X className="w-5 h-5 text-slate-400" />

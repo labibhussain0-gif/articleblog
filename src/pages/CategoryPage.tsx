@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import { Clock, Calendar, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, startOfDay, subDays } from 'date-fns';
 import { useQuery } from '@tanstack/react-query';
 import { groq, urlFor } from '../lib/sanity';
 
@@ -13,6 +13,7 @@ export default function CategoryPage() {
   // Derive slug from param or from URL path (e.g., /category/politics → 'politics')
   const slug = categorySlug || location.pathname.split('/').pop() || 'politics';
   const [activeFilter, setActiveFilter] = useState<'all' | 'today' | 'week'>('all');
+  const [sortOrder, setSortOrder] = useState<'latest' | 'oldest'>('latest');
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data: category, isLoading: loadingCategory } = useQuery({
@@ -27,7 +28,7 @@ export default function CategoryPage() {
 
   if (loadingCategory || loadingArticles) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-slate-900 flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-red-600" />
       </div>
     );
@@ -40,12 +41,25 @@ export default function CategoryPage() {
     color: category?.color || '#dc2626',
   };
 
-  const filteredArticles = articles; // Could apply the local activeFilter here if needed
+  const filteredArticles = articles
+    .filter((article: any) => {
+      if (activeFilter === 'all') return true;
+      const published = new Date(article.publishedAt || Date.now());
+      const todayStart = startOfDay(new Date());
+      if (activeFilter === 'today') return published >= subDays(todayStart, 1);
+      if (activeFilter === 'week') return published >= subDays(todayStart, 7);
+      return true;
+    })
+    .sort((a: any, b: any) => {
+      const dateA = new Date(a.publishedAt || 0).getTime();
+      const dateB = new Date(b.publishedAt || 0).getTime();
+      return sortOrder === 'latest' ? dateB - dateA : dateA - dateB;
+    });
   const totalPages = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE);
   const paginatedArticles = filteredArticles.slice((currentPage - 1) * ARTICLES_PER_PAGE, currentPage * ARTICLES_PER_PAGE);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+    <div className="min-h-screen bg-white dark:bg-slate-900">
       {/* Category Header */}
       <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -84,10 +98,13 @@ export default function CategoryPage() {
               </button>
             ))}
           </div>
-          <select className="px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-sm">
-            <option>Sort by: Latest</option>
-            <option>Sort by: Oldest</option>
-            <option>Sort by: Most Read</option>
+          <select
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value as 'latest' | 'oldest')}
+            className="px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-sm"
+          >
+            <option value="latest">Sort by: Latest</option>
+            <option value="oldest">Sort by: Oldest</option>
           </select>
         </div>
 

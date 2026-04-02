@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Search, Menu, X } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { groq } from '../../lib/sanity';
+import ThemeToggle from './ThemeToggle';
 
 const fallbackNavLinks = [
   { name: 'Politics', href: '/category/politics' },
@@ -14,7 +15,9 @@ const fallbackNavLinks = [
 export default function StickyHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const location = useLocation();
+  const navigate = useNavigate();
 
   const { data: categories } = useQuery({
     queryKey: ['nav-categories'],
@@ -89,15 +92,18 @@ export default function StickyHeader() {
           </nav>
 
           {/* Search Bar */}
-          <div className="hidden md:flex items-center">
-            <div className="relative">
+          <div className="hidden md:flex items-center gap-2">
+            <form onSubmit={(e) => { e.preventDefault(); navigate(`/search?q=${encodeURIComponent(searchQuery)}`); }} className="relative">
               <input
                 type="search"
                 placeholder="Search articles..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-48 lg:w-64 px-4 py-2 pl-10 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-red-400 transition-all"
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            </div>
+            </form>
+            <ThemeToggle />
           </div>
         </div>
       </div>
@@ -118,15 +124,18 @@ export default function StickyHeader() {
                 {link.name}
               </Link>
             ))}
-            <div className="pt-4">
-              <div className="relative">
+            <div className="pt-4 flex items-center gap-2">
+              <form onSubmit={(e) => { e.preventDefault(); navigate(`/search?q=${encodeURIComponent(searchQuery)}`); }} className="relative flex-1">
                 <input
                   type="search"
                   placeholder="Search articles..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full px-4 py-3 pl-10 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
                 />
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              </div>
+              </form>
+              <ThemeToggle />
             </div>
           </nav>
         </div>

@@ -305,4 +305,15 @@ export const groq = {
         readingTime
       }
     `, { limit }),
+
+  getPageBySlug: (slug: string): Promise<{ _id: string; title: string; slug: { current: string }; body?: any[]; description?: string } | null> =>
+    queryOne<{ _id: string; title: string; slug: { current: string }; body?: any[]; description?: string }>(`
+      *[_type == "page" && slug.current == $slug][0] {
+        _id,
+        title,
+        slug,
+        body,
+        description
+      }
+    `, { slug }),
 };

@@ -10,6 +10,7 @@ import Profile from './pages/Profile';
 import CategoryPage from './pages/CategoryPage';
 import AuthorPage from './pages/AuthorPage';
 import SearchPage from './pages/SearchPage';
+import StaticPage from './pages/StaticPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsPage from './pages/TermsPage';
 import CookiePolicyPage from './pages/CookiePolicyPage';
@@ -44,6 +45,8 @@ function App() {
             <Route path="search" element={<SearchPage />} />
             <Route path="create" element={<CreateArticle />} />
             <Route path="profile/:username" element={<Profile />} />
+            <Route path="about" element={<StaticPage />} />
+            <Route path="contact" element={<StaticPage />} />
             <Route path="privacy" element={<PrivacyPolicyPage />} />
             <Route path="terms" element={<TermsPage />} />
             <Route path="cookies" element={<CookiePolicyPage />} />

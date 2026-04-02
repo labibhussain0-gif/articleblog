@@ -7,14 +7,20 @@ import CompactCard from '../components/cards/CompactCard';
 import { ArrowRight, Mail, Loader2 } from 'lucide-react';
 import AdBanner from '../components/ads/AdBanner';
 import { groq, urlFor } from '../lib/sanity';
+import { subscribeEmail } from '../lib/firebase';
 
 function NewsletterForm() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
+      try {
+        await subscribeEmail(email, 'homepage');
+      } catch (error) {
+        console.error('Failed to subscribe:', error);
+      }
       setSubscribed(true);
       setEmail('');
     }
@@ -106,7 +112,7 @@ export default function HomePage() {
   }).filter((section): section is any => section !== null && section.articles.length > 0);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+    <div className="min-h-screen bg-white dark:bg-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         {/* Hero Section: Featured + Latest */}
