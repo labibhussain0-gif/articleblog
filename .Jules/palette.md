@@ -1,0 +1,3 @@
+## 2025-04-04 - Manual forms lack implicit labels and loading states
+**Learning:** Forms constructed manually (e.g., search in StickyHeader, newsletter subscriptions in Footer and HomePage) lack `aria-label`s on their inputs and omit loading/disabled states during async operations, leading to potential duplicate submissions and poor screen reader experience. This contrasts with forms built using `react-hook-form` (Login, Register), which correctly handle these states.
+**Action:** When auditing or building new forms without a form library in this codebase, explicitly verify the presence of `aria-label`s for inputs without direct `<label>` tags, and implement `isSubmitting` states to disable interactable elements and provide visual feedback during async actions.
