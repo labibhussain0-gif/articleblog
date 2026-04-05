@@ -1,0 +1,3 @@
+## 2025-01-20 - Forms Lacking ARIA Labels and Loading States
+**Learning:** Manually constructed forms (e.g., those not using `react-hook-form` or standard UI libraries) frequently lack `aria-label`s on standard inputs without direct `<label>` tags and missing disabled or loading states during asynchronous network actions (like `subscribeEmail`). This degrades the experience for screen readers and risks double-submission by regular users.
+**Action:** When auditing or implementing forms, explicitly verify the presence of `aria-label` when the input lacks an explicitly associated `<label>`, and always ensure interactive elements implement an `isSubmitting` state that uses `disabled` properties, cursor updates, and text/spinner adjustments.
