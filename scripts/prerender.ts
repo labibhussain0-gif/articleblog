@@ -131,11 +131,39 @@ async function run() {
 
     let faqSchema = null;
     let faqHtml = '';
+    
+    // Attempt to extract FAQ from body if explicit FAQ array is empty
+    let parsedFaqs = [];
     if (article.faq && Array.isArray(article.faq) && article.faq.length > 0) {
+      parsedFaqs = article.faq;
+      faqHtml = '<h2>Frequently Asked Questions</h2>' + article.faq.map((q: any) => `<h3>${q.question}</h3><p>${q.answer}</p>`).join('');
+    } else if (article.body && Array.isArray(article.body)) {
+      let currentQuestion = null;
+      let currentAnswer = '';
+      for (const block of article.body) {
+        if (block._type !== 'block') continue;
+        const text = block.children?.map((c: any) => c.text).join('') || '';
+        
+        if ((block.style === 'h2' || block.style === 'h3' || block.style === 'h4') && text.trim().endsWith('?')) {
+          if (currentQuestion && currentAnswer) parsedFaqs.push({ question: currentQuestion, answer: currentAnswer.trim() });
+          currentQuestion = text.trim();
+          currentAnswer = '';
+        } else if (currentQuestion && block.style === 'normal') {
+          currentAnswer += text + '\n';
+        } else if (currentQuestion && (block.style === 'h2' || block.style === 'h3' || block.style === 'h4')) {
+          if (currentAnswer) parsedFaqs.push({ question: currentQuestion, answer: currentAnswer.trim() });
+          currentQuestion = null;
+          currentAnswer = '';
+        }
+      }
+      if (currentQuestion && currentAnswer) parsedFaqs.push({ question: currentQuestion, answer: currentAnswer.trim() });
+    }
+
+    if (parsedFaqs.length > 0) {
       faqSchema = {
         "@context": "https://schema.org",
         "@type": "FAQPage",
-        "mainEntity": article.faq.map((q: any) => ({
+        "mainEntity": parsedFaqs.map((q: any) => ({
           "@type": "Question",
           "name": q.question,
           "acceptedAnswer": {
@@ -144,8 +172,6 @@ async function run() {
           }
         }))
       };
-      
-      faqHtml = '<h2>Frequently Asked Questions</h2>' + article.faq.map((q: any) => `<h3>${q.question}</h3><p>${q.answer}</p>`).join('');
     }
 
     let schemaScripts = `<script type="application/ld+json">\n${JSON.stringify(jsonLd)}\n</script>\n`;
