@@ -33,6 +33,7 @@ export default function SearchPage() {
           />
           {query && (
             <button
+              aria-label="Clear search"
               onClick={() => { setQuery(''); setSearchParams({}); }}
               className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700"
             >
