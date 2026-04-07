@@ -273,6 +273,25 @@ export default function ArticlePage() {
           )}
         </div>
 
+        {/* Explicit FAQs */}
+        {article.faq && Array.isArray(article.faq) && article.faq.length > 0 && (
+          <section className="mt-12 pt-8 border-t border-slate-200 dark:border-slate-700">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">Frequently Asked Questions</h2>
+            <div className="space-y-6">
+              {article.faq.map((faq: any, index: number) => (
+                <div key={index} className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-6">
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">
+                    {faq.question}
+                  </h3>
+                  <div className="prose prose-slate dark:prose-invert max-w-none">
+                    <p>{faq.answer}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Tags */}
         {article.tags && article.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-8 pt-8 border-t border-slate-200 dark:border-slate-700">
