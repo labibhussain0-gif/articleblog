@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "vite build && cd studio && npm ci && npm run build && cd .. && cp -r studio/dist dist/studio",
+    "build": "vite build && npx tsx scripts/prerender.ts && npx tsx scripts/generate-sitemap.ts && cd studio && npm ci && npm run build && cd .. && cp -r studio/dist dist/studio",
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",

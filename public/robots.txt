@@ -5,4 +5,4 @@ Disallow: /api/
 Disallow: /admin/
 Disallow: /preview/
 
-Sitemap: https://thedailypulse.com/sitemap-index.xml
+Sitemap: https://articleblogwebsite.web.app/sitemap.xml

@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet-async';
 import { useState, useEffect, Fragment } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { format } from 'date-fns';
@@ -86,14 +87,67 @@ export default function ArticlePage() {
         );
       },
     },
+    marks: {
+      link: ({value, children}: any) => (
+        <a href={value?.href} target="_blank" rel="noopener noreferrer" 
+           className="text-red-600 dark:text-red-400 hover:underline font-medium">
+          {children}
+        </a>
+      ),
+      strong: ({children}: any) => <strong className="font-bold">{children}</strong>,
+      em: ({children}: any) => <em className="italic">{children}</em>,
+    },
     list: {
       bullet: ({children}: any) => <ul className="list-disc list-outside ml-6 my-4 space-y-2 text-slate-700 dark:text-slate-300">{children}</ul>,
       number: ({children}: any) => <ol className="list-decimal list-outside ml-6 my-4 space-y-2 text-slate-700 dark:text-slate-300">{children}</ol>,
     },
   };
 
+  const articleUrl = `https://articleblogwebsite.web.app/article/${article.slug?.current}`;
+
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": articleUrl
+    },
+    "headline": article.title,
+    "description": article.excerpt || article.title,
+    "image": coverImageUrl || "",
+    "author": {
+      "@type": "Person",
+      "name": article.author?.name || 'Unknown'
+    },
+    "datePublished": article.publishedAt || new Date().toISOString(),
+    "publisher": {
+      "@type": "Organization",
+      "name": "The Daily Pulse",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://articleblogwebsite.web.app/apple-touch-icon.png"
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
+      <Helmet>
+        <title>{article.title} | The Daily Pulse</title>
+        <meta name="description" content={article.excerpt || article.title} />
+        <meta property="og:title" content={article.title} />
+        <meta property="og:description" content={article.excerpt || article.title} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={articleUrl} />
+        {coverImageUrl && <meta property="og:image" content={coverImageUrl} />}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={article.title} />
+        <meta name="twitter:description" content={article.excerpt || article.title} />
+        {coverImageUrl && <meta name="twitter:image" content={coverImageUrl} />}
+        <script type="application/ld+json">
+          {JSON.stringify(articleJsonLd)}
+        </script>
+      </Helmet>
       {/* Reading Progress Bar */}
       <div className="fixed top-0 left-0 right-0 h-1 bg-slate-200 dark:bg-slate-700 z-50">
         <div

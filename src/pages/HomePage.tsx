@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet-async';
 import { useState, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -8,6 +9,18 @@ import { ArrowRight, Mail, Loader2 } from 'lucide-react';
 import AdBanner from '../components/ads/AdBanner';
 import { groq, urlFor } from '../lib/sanity';
 import { subscribeEmail } from '../lib/firebase';
+
+const orgSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "The Daily Pulse",
+  "url": "https://articleblogwebsite.web.app",
+  "logo": "https://articleblogwebsite.web.app/apple-touch-icon.png",
+  "sameAs": [
+    "https://twitter.com/thedailypulse",
+    "https://facebook.com/thedailypulse"
+  ]
+};
 
 function NewsletterForm() {
   const [email, setEmail] = useState('');
@@ -113,6 +126,16 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
+      <Helmet>
+        <title>The Daily Pulse | Breaking News, Analysis & Culture</title>
+        <meta name="description" content="The Daily Pulse delivers breaking news, in-depth analysis, and cultural coverage. Your trusted source for today's stories that matter." />
+        <meta property="og:title" content="The Daily Pulse | Breaking News, Analysis & Culture" />
+        <meta property="og:description" content="The Daily Pulse delivers breaking news, in-depth analysis, and cultural coverage." />
+        <meta property="og:type" content="website" />
+        <script type="application/ld+json">
+          {JSON.stringify(orgSchema)}
+        </script>
+      </Helmet>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         {/* Hero Section: Featured + Latest */}
