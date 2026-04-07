@@ -42,6 +42,17 @@ export const articleSchema = defineType({
     defineField({ name: 'category', title: 'Category', type: 'reference', to: [{ type: 'category' }], validation: (Rule) => Rule.required() }),
     defineField({ name: 'author', title: 'Author', type: 'reference', to: [{ type: 'author' }], validation: (Rule) => Rule.required() }),
     defineField({ name: 'tags', title: 'Tags', type: 'array', of: [{ type: 'reference', to: [{ type: 'tag' }] }] }),
+    defineField({
+      name: 'faq', title: 'FAQ', type: 'array',
+      description: 'Optional FAQ items for structured data',
+      of: [{
+        type: 'object',
+        fields: [
+          { name: 'question', title: 'Question', type: 'string' },
+          { name: 'answer', title: 'Answer', type: 'text' },
+        ]
+      }]
+    }),
     defineField({ name: 'publishedAt', title: 'Published At', type: 'datetime' }),
     defineField({
       name: 'status', title: 'Status', type: 'string',

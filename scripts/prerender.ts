@@ -4,6 +4,7 @@ import { createClient } from '@sanity/client';
 import urlBuilder from '@sanity/image-url';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
+import { toHTML } from '@portabletext/to-html';
 
 dotenv.config();
 
@@ -12,7 +13,8 @@ const __dirname = path.dirname(__filename);
 const DIST_DIR = path.resolve(__dirname, '../dist');
 const INDEX_HTML_PATH = path.join(DIST_DIR, 'index.html');
 
-const SITE_URL = process.env.SITE_URL || 'https://thedailypulse.com';
+// Updated SITE_URL to point to production
+const SITE_URL = process.env.SITE_URL || 'https://articleblogwebsite.web.app';
 
 const sanityClient = createClient({
   projectId: process.env.VITE_SANITY_PROJECT_ID || 'r9p19ugf',
@@ -31,7 +33,7 @@ function urlFor(source: any) {
 async function fetchSanityData() {
   const articles = await sanityClient.fetch(`
     *[_type == "article" && status == "published"] {
-      _id, title, slug, excerpt, publishedAt, coverImage,
+      _id, title, slug, excerpt, body, faq, publishedAt, coverImage,
       author->{ name, slug, avatar },
       category->{ name, slug }
     }
@@ -127,11 +129,39 @@ async function run() {
       }
     };
 
-    const finalHead = metaHtml + `\n<script type="application/ld+json">\n${JSON.stringify(jsonLd)}\n</script>\n`;
+    let faqSchema = null;
+    let faqHtml = '';
+    if (article.faq && Array.isArray(article.faq) && article.faq.length > 0) {
+      faqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": article.faq.map((q: any) => ({
+          "@type": "Question",
+          "name": q.question,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": q.answer
+          }
+        }))
+      };
+      
+      faqHtml = '<h2>Frequently Asked Questions</h2>' + article.faq.map((q: any) => `<h3>${q.question}</h3><p>${q.answer}</p>`).join('');
+    }
+
+    let schemaScripts = `<script type="application/ld+json">\n${JSON.stringify(jsonLd)}\n</script>\n`;
+    if (faqSchema) {
+      schemaScripts += `<script type="application/ld+json">\n${JSON.stringify(faqSchema)}\n</script>\n`;
+    }
+
+    const finalHead = metaHtml + '\n' + schemaScripts;
     const finalHtml = cleanHtmlTemplate.replace('<!-- META -->', finalHead);
     
-    const bodyContent = `<div id="seo-content" style="display:none;"><h1>${article.title}</h1><p>${article.excerpt}</p></div>`;
-    const readyHtml = finalHtml.replace('<div id="root"></div>', `<div id="root"></div>\n${bodyContent}`);
+    // Create the HTML contents for inside #root
+    // We convert portable text if it exists, otherwise fallback to excerpt.
+    const bodyHtml = article.body ? toHTML(article.body) : `<p>${article.excerpt}</p>`;
+    const bodyContent = `<div id="root"><main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 prose prose-lg dark:prose-invert"><h1>${article.title}</h1>${bodyHtml}${faqHtml}</main></div>`;
+    
+    const readyHtml = finalHtml.replace('<div id="root"></div>', bodyContent);
 
     const outDir = path.join(DIST_DIR, 'article', article.slug.current);
     ensureDirSync(outDir);

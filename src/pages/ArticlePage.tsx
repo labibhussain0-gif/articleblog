@@ -130,6 +130,22 @@ export default function ArticlePage() {
     }
   };
 
+  let faqJsonLd = null;
+  if (article.faq && Array.isArray(article.faq) && article.faq.length > 0) {
+    faqJsonLd = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": article.faq.map((q: any) => ({
+        "@type": "Question",
+        "name": q.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": q.answer
+        }
+      }))
+    };
+  }
+
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
       <Helmet>
@@ -147,6 +163,11 @@ export default function ArticlePage() {
         <script type="application/ld+json">
           {JSON.stringify(articleJsonLd)}
         </script>
+        {faqJsonLd && (
+          <script type="application/ld+json">
+            {JSON.stringify(faqJsonLd)}
+          </script>
+        )}
       </Helmet>
       {/* Reading Progress Bar */}
       <div className="fixed top-0 left-0 right-0 h-1 bg-slate-200 dark:bg-slate-700 z-50">

@@ -133,6 +133,7 @@ export const groq = {
         slug,
         excerpt,
         body,
+        faq,
         coverImage { ..., asset->, alt, caption },
         category->{ _id, _type, name, slug, description, color },
         author->{ _id, _type, name, slug, bio, avatar { ..., asset-> }, socialLinks },
