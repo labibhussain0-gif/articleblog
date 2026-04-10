@@ -26,17 +26,21 @@ const legal = [
 export default function Footer() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [isSubscribing, setIsSubscribing] = useState(false);
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
+      setIsSubscribing(true);
       try {
         await subscribeEmail(email, 'footer');
+        setSubscribed(true);
+        setEmail('');
       } catch (error) {
         console.error('Failed to subscribe:', error);
+      } finally {
+        setIsSubscribing(false);
       }
-      setSubscribed(true);
-      setEmail('');
     }
   };
 
@@ -62,17 +66,20 @@ export default function Footer() {
               <form onSubmit={handleSubscribe} className="flex gap-3 w-full md:w-auto">
                 <input
                   type="email"
+                  aria-label="Email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
-                  className="flex-1 md:w-64 px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="flex-1 md:w-64 px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50"
                   required
+                  disabled={isSubscribing}
                 />
                 <button
                   type="submit"
-                  className="px-6 py-3 bg-red-700 hover:bg-red-600 text-white font-medium rounded-lg transition-colors"
+                  disabled={isSubscribing}
+                  className="px-6 py-3 bg-red-700 hover:bg-red-600 text-white font-medium rounded-lg transition-colors disabled:opacity-50"
                 >
-                  Subscribe
+                  {isSubscribing ? 'Subscribing...' : 'Subscribe'}
                 </button>
               </form>
             )}
