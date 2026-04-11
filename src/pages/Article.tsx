@@ -53,20 +53,20 @@ export default function Article() {
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <button className="flex items-center gap-2 text-gray-500 hover:text-red-500 transition-colors">
+          <button aria-label={`${article.likes?.length || 0} Likes`} className="flex items-center gap-2 text-gray-500 hover:text-red-500 transition-colors">
             <Heart className="w-6 h-6" />
             <span>{article.likes?.length || 0}</span>
           </button>
-          <button className="flex items-center gap-2 text-gray-500 hover:text-indigo-500 transition-colors">
+          <button aria-label={`${article.comments?.length || 0} Comments`} className="flex items-center gap-2 text-gray-500 hover:text-indigo-500 transition-colors">
             <MessageSquare className="w-6 h-6" />
             <span>{article.comments?.length || 0}</span>
           </button>
         </div>
         <div className="flex items-center gap-4">
-          <button className="text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
+          <button aria-label="Share article" className="text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
             <Share2 className="w-6 h-6" />
           </button>
-          <button className="text-gray-500 hover:text-indigo-500 transition-colors">
+          <button aria-label="Bookmark article" className="text-gray-500 hover:text-indigo-500 transition-colors">
             <Bookmark className="w-6 h-6" />
           </button>
         </div>
