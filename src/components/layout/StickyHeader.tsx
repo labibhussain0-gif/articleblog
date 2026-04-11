@@ -96,6 +96,7 @@ export default function StickyHeader() {
             <form onSubmit={(e) => { e.preventDefault(); navigate(`/search?q=${encodeURIComponent(searchQuery)}`); }} className="relative">
               <input
                 type="search"
+                aria-label="Search articles"
                 placeholder="Search articles..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -128,6 +129,7 @@ export default function StickyHeader() {
               <form onSubmit={(e) => { e.preventDefault(); navigate(`/search?q=${encodeURIComponent(searchQuery)}`); }} className="relative flex-1">
                 <input
                   type="search"
+                  aria-label="Search articles"
                   placeholder="Search articles..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
