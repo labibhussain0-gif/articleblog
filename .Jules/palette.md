@@ -1,0 +1,3 @@
+## 2025-02-23 - Dynamic ARIA Labels on Icon Buttons
+**Learning:** When adding `aria-label` attributes to buttons, if the button contains visible dynamic text (like a counter or `<span>{likes}</span>`), a static `aria-label` will completely override the visible text for screen readers. This means screen readers will not announce the updated likes count.
+**Action:** Ensure the `aria-label` encompasses the dynamic data (e.g., `aria-label={`${likes} Likes`}`) when the button is not purely icon-only.
