@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { subscribeEmail } from '../../lib/firebase';
+import { Loader2 } from 'lucide-react';
 
 const categories = [
   { name: 'Politics', href: '/category/politics' },
@@ -26,14 +27,18 @@ const legal = [
 export default function Footer() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
+      setIsSubmitting(true);
       try {
         await subscribeEmail(email, 'footer');
       } catch (error) {
         console.error('Failed to subscribe:', error);
+      } finally {
+        setIsSubmitting(false);
       }
       setSubscribed(true);
       setEmail('');
@@ -62,17 +67,21 @@ export default function Footer() {
               <form onSubmit={handleSubscribe} className="flex gap-3 w-full md:w-auto">
                 <input
                   type="email"
+                  aria-label="Email address for newsletter"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
-                  className="flex-1 md:w-64 px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  disabled={isSubmitting}
+                  className="flex-1 md:w-64 px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50"
                   required
                 />
                 <button
                   type="submit"
-                  className="px-6 py-3 bg-red-700 hover:bg-red-600 text-white font-medium rounded-lg transition-colors"
+                  disabled={isSubmitting}
+                  className="px-6 py-3 bg-red-700 hover:bg-red-600 text-white font-medium rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2 min-w-32"
                 >
-                  Subscribe
+                  {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
+                  {isSubmitting ? 'Subscribing...' : 'Subscribe'}
                 </button>
               </form>
             )}
