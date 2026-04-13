@@ -1,0 +1,3 @@
+## 2023-10-24 - [Mobile Menu Toggle Accessibility]
+**Learning:** In React applications, dynamic `aria-label`s and `aria-expanded` attributes on mobile menu toggle buttons are critical for screen reader users to understand both the current state (open/closed) and the action the button will perform next. Furthermore, explicit focus indicators (`focus-visible`) enhance keyboard navigation.
+**Action:** Ensure all interactive elements, especially toggles, correctly represent their state using appropriate ARIA attributes (`aria-expanded`) and provide clear visual focus states for keyboard accessibility.
