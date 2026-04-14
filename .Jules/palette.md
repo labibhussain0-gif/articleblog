@@ -1,0 +1,3 @@
+## 2024-05-14 - Add Form Accessibility Attributes
+**Learning:** Forms in this codebase (like the Login page) often lack basic accessibility attributes (htmlFor, id, aria-invalid, aria-describedby) when using `react-hook-form` without UI component libraries. Screen readers miss crucial validation context.
+**Action:** When working on or creating new forms, always explicitly bind inputs to labels via `htmlFor`/`id` pairs, implement disabled/loading states during async actions, and add `aria-invalid` / `aria-describedby` when inline validation errors are rendered to provide crucial context for screen readers.
