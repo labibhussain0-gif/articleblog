@@ -1,0 +1,3 @@
+## 2024-05-17 - Form Accessibility and Inline Validation
+**Learning:** Found an accessibility issue pattern specific to this app's components. Forms constructed manually (e.g. `src/pages/Login.tsx`) often lack proper accessibility attributes. Inputs are not explicitly bound to labels via `htmlFor`/`id` pairs, and `aria-invalid` / `aria-describedby` are missing when inline validation errors are rendered, depriving screen readers of crucial context.
+**Action:** When working on forms, ensure inputs are explicitly bound to labels via `htmlFor`/`id` pairs, implement disabled/loading states during async actions, and add `aria-invalid` / `aria-describedby` when inline validation errors are rendered to provide crucial context for screen readers.
