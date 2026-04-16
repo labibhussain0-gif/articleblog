@@ -53,21 +53,33 @@ export default function Article() {
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <button className="flex items-center gap-2 text-gray-500 hover:text-red-500 transition-colors">
-            <Heart className="w-6 h-6" />
+          <button
+            aria-label={`${article.likes?.length || 0} Likes`}
+            className="flex items-center gap-2 text-gray-500 hover:text-red-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 rounded-lg"
+          >
+            <Heart className="w-6 h-6" aria-hidden="true" />
             <span>{article.likes?.length || 0}</span>
           </button>
-          <button className="flex items-center gap-2 text-gray-500 hover:text-indigo-500 transition-colors">
-            <MessageSquare className="w-6 h-6" />
+          <button
+            aria-label={`${article.comments?.length || 0} Comments`}
+            className="flex items-center gap-2 text-gray-500 hover:text-indigo-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-lg"
+          >
+            <MessageSquare className="w-6 h-6" aria-hidden="true" />
             <span>{article.comments?.length || 0}</span>
           </button>
         </div>
         <div className="flex items-center gap-4">
-          <button className="text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
-            <Share2 className="w-6 h-6" />
+          <button
+            aria-label="Share article"
+            className="text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 dark:focus-visible:ring-white rounded-lg p-1"
+          >
+            <Share2 className="w-6 h-6" aria-hidden="true" />
           </button>
-          <button className="text-gray-500 hover:text-indigo-500 transition-colors">
-            <Bookmark className="w-6 h-6" />
+          <button
+            aria-label="Bookmark article"
+            className="text-gray-500 hover:text-indigo-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-lg p-1"
+          >
+            <Bookmark className="w-6 h-6" aria-hidden="true" />
           </button>
         </div>
       </div>
