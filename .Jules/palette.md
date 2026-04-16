@@ -1,0 +1,3 @@
+## 2024-04-16 - Dynamic Text Overridden by Static ARIA Labels
+**Learning:** When adding `aria-label` attributes to buttons, verify that the button is purely icon-only. If the button contains visible dynamic text (like a counter or `<span>{likes}</span>`), a static `aria-label` (e.g., `aria-label="Likes"`) will completely override the visible text for screen readers. Screen readers will just announce "Likes, button" and the user will not know the quantity.
+**Action:** Ensure the `aria-label` encompasses the dynamic data (e.g., `aria-label={\`${likes} Likes\`}`) and always set `aria-hidden="true"` on purely decorative icon SVGs within the button to prevent redundant announcements.
