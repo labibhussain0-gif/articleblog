@@ -1,0 +1,3 @@
+## 2025-03-09 - Added ARIA labels to article action buttons
+**Learning:** Icon-only buttons (like Bookmark and Share) in `ArticlePage.tsx` were completely inaccessible to screen readers. Buttons with dynamic counts (like Heart and Message) had text visible but didn't provide good context without their visual icons. Using `aria-label` while adding `aria-hidden="true"` to the SVG icons solves this neatly.
+**Action:** Always ensure icon-only buttons have descriptive `aria-label`s. For buttons mixing icons and dynamic text, use an `aria-label` to provide the combined context (e.g., "12 Likes") and hide the decorative SVG.
