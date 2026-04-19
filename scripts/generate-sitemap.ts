@@ -28,8 +28,10 @@ async function generateSitemap() {
   const categories = await sanityClient.fetch(`*[_type == "category"] { slug }`);
   const authors = await sanityClient.fetch(`*[_type == "author"] { slug }`);
 
-  let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
-  xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+  const xmlLines: string[] = [
+    `<?xml version="1.0" encoding="UTF-8"?>`,
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`
+  ];
 
   // Static routes
   const staticRoutes = [
@@ -39,47 +41,53 @@ async function generateSitemap() {
   ];
 
   for (const route of staticRoutes) {
-    xml += `  <url>\n`;
-    xml += `    <loc>${SITE_URL}${route.url}</loc>\n`;
-    xml += `    <changefreq>daily</changefreq>\n`;
-    xml += `    <priority>${route.priority}</priority>\n`;
-    xml += `  </url>\n`;
+    xmlLines.push(
+      `  <url>\n` +
+      `    <loc>${SITE_URL}${route.url}</loc>\n` +
+      `    <changefreq>daily</changefreq>\n` +
+      `    <priority>${route.priority}</priority>\n` +
+      `  </url>`
+    );
   }
 
   // Articles
   for (const article of articles) {
     if (!article.slug?.current) continue;
-    xml += `  <url>\n`;
-    xml += `    <loc>${SITE_URL}/article/${article.slug.current}</loc>\n`;
+    let urlBlock = `  <url>\n    <loc>${SITE_URL}/article/${article.slug.current}</loc>\n`;
     if (article.publishedAt) {
-      xml += `    <lastmod>${new Date(article.publishedAt).toISOString()}</lastmod>\n`;
+      urlBlock += `    <lastmod>${new Date(article.publishedAt).toISOString()}</lastmod>\n`;
     }
-    xml += `    <changefreq>weekly</changefreq>\n`;
-    xml += `    <priority>0.8</priority>\n`;
-    xml += `  </url>\n`;
+    urlBlock += `    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>`;
+    xmlLines.push(urlBlock);
   }
 
   // Categories
   for (const category of categories) {
     if (!category.slug?.current) continue;
-    xml += `  <url>\n`;
-    xml += `    <loc>${SITE_URL}/category/${category.slug.current}</loc>\n`;
-    xml += `    <changefreq>weekly</changefreq>\n`;
-    xml += `    <priority>0.6</priority>\n`;
-    xml += `  </url>\n`;
+    xmlLines.push(
+      `  <url>\n` +
+      `    <loc>${SITE_URL}/category/${category.slug.current}</loc>\n` +
+      `    <changefreq>weekly</changefreq>\n` +
+      `    <priority>0.6</priority>\n` +
+      `  </url>`
+    );
   }
 
   // Authors
   for (const author of authors) {
     if (!author.slug?.current) continue;
-    xml += `  <url>\n`;
-    xml += `    <loc>${SITE_URL}/author/${author.slug.current}</loc>\n`;
-    xml += `    <changefreq>monthly</changefreq>\n`;
-    xml += `    <priority>0.5</priority>\n`;
-    xml += `  </url>\n`;
+    xmlLines.push(
+      `  <url>\n` +
+      `    <loc>${SITE_URL}/author/${author.slug.current}</loc>\n` +
+      `    <changefreq>monthly</changefreq>\n` +
+      `    <priority>0.5</priority>\n` +
+      `  </url>`
+    );
   }
 
-  xml += `</urlset>\n`;
+  xmlLines.push(`</urlset>`);
+
+  const xml = xmlLines.join('\n') + '\n';
 
   if (!fs.existsSync(DIST_DIR)) {
     fs.mkdirSync(DIST_DIR, { recursive: true });
