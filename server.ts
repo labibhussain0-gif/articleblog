@@ -7,7 +7,10 @@ import path from 'path';
 import { createServer as createViteServer } from 'vite';
 
 const prisma = new PrismaClient();
-const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-min-32-chars';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('FATAL ERROR: JWT_SECRET environment variable is not defined.');
+}
 
 async function startServer() {
   const app = express();
