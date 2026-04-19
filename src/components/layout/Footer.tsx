@@ -32,8 +32,8 @@ export default function Footer() {
     if (email) {
       try {
         await subscribeEmail(email, 'footer');
-      } catch (error) {
-        console.error('Failed to subscribe:', error);
+      } catch {
+        // Ignore subscription errors
       }
       setSubscribed(true);
       setEmail('');
