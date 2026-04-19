@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import { useState, Fragment } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import FeaturedCard from '../components/cards/FeaturedCard';
@@ -222,36 +222,42 @@ export default function HomePage() {
         </section>
 
         {/* Category Sections */}
-        {categorySections.map((section, i) => (
-          <Fragment key={section.name}>
-            <section className="mb-12">
-            <div className="flex items-center justify-between mb-6">
-              <h2
-                className="text-2xl font-bold text-slate-900 dark:text-white"
-                style={{ fontFamily: 'var(--font-heading)' }}
-              >
-                {section.name}
-              </h2>
-              <Link
-                to={section.href}
-                className="flex items-center gap-1 text-sm font-medium text-red-600 dark:text-red-400 hover:gap-2 transition-all"
-              >
-                View All <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {section.articles.map((article) => (
-                <StandardCard key={article.id} article={article} />
-              ))}
-            </div>
-          </section>
-            {i === 1 && (
-              <section className="mb-12">
+        {categorySections.flatMap((section, i) => {
+          const mainSection = (
+            <section key={section.name} className="mb-12">
+              <div className="flex items-center justify-between mb-6">
+                <h2
+                  className="text-2xl font-bold text-slate-900 dark:text-white"
+                  style={{ fontFamily: 'var(--font-heading)' }}
+                >
+                  {section.name}
+                </h2>
+                <Link
+                  to={section.href}
+                  className="flex items-center gap-1 text-sm font-medium text-red-600 dark:text-red-400 hover:gap-2 transition-all"
+                >
+                  View All <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {section.articles.map((article) => (
+                  <StandardCard key={article.id} article={article} />
+                ))}
+              </div>
+            </section>
+          );
+
+          if (i === 1) {
+            return [
+              mainSection,
+              <section key={`${section.name}-ad`} className="mb-12">
                 <AdBanner slot="home-category-middle" format="horizontal" />
               </section>
-            )}
-          </Fragment>
-        ))}
+            ];
+          }
+
+          return [mainSection];
+        })}
 
         {/* Editor's Picks */}
         <section className="mb-12">
