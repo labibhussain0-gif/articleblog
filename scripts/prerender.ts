@@ -139,24 +139,31 @@ async function run() {
       faqHtml = '<h2>Frequently Asked Questions</h2>' + article.faq.map((q: any) => `<h3>${q.question}</h3><p>${q.answer}</p>`).join('');
     } else if (article.body && Array.isArray(article.body)) {
       let currentQuestion = null;
-      let currentAnswer = '';
+      let currentAnswerBlocks: string[] = [];
       for (const block of article.body) {
         if (block._type !== 'block') continue;
-        const text = block.children?.map((c: any) => c.text).join('') || '';
         
-        if ((block.style === 'h2' || block.style === 'h3' || block.style === 'h4') && text.trim().endsWith('?')) {
-          if (currentQuestion && currentAnswer) parsedFaqs.push({ question: currentQuestion, answer: currentAnswer.trim() });
-          currentQuestion = text.trim();
-          currentAnswer = '';
+        // Optimized text extraction using reduce instead of map + join
+        const text = block.children?.reduce((acc: string, c: any) => acc + (c.text || ''), '') || '';
+
+        const isHeading = block.style === 'h2' || block.style === 'h3' || block.style === 'h4';
+
+        if (isHeading) {
+          const trimmedText = text.trim();
+          if (trimmedText.endsWith('?')) {
+            if (currentQuestion && currentAnswerBlocks.length > 0) parsedFaqs.push({ question: currentQuestion, answer: currentAnswerBlocks.join('\n').trim() });
+            currentQuestion = trimmedText;
+            currentAnswerBlocks = [];
+          } else if (currentQuestion) {
+            if (currentAnswerBlocks.length > 0) parsedFaqs.push({ question: currentQuestion, answer: currentAnswerBlocks.join('\n').trim() });
+            currentQuestion = null;
+            currentAnswerBlocks = [];
+          }
         } else if (currentQuestion && block.style === 'normal') {
-          currentAnswer += text + '\n';
-        } else if (currentQuestion && (block.style === 'h2' || block.style === 'h3' || block.style === 'h4')) {
-          if (currentAnswer) parsedFaqs.push({ question: currentQuestion, answer: currentAnswer.trim() });
-          currentQuestion = null;
-          currentAnswer = '';
+          currentAnswerBlocks.push(text);
         }
       }
-      if (currentQuestion && currentAnswer) parsedFaqs.push({ question: currentQuestion, answer: currentAnswer.trim() });
+      if (currentQuestion && currentAnswerBlocks.length > 0) parsedFaqs.push({ question: currentQuestion, answer: currentAnswerBlocks.join('\n').trim() });
     }
 
     if (parsedFaqs.length > 0) {
