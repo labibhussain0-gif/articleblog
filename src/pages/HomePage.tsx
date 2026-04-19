@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import { useState, Fragment } from 'react';
+import { useState, Fragment, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import FeaturedCard from '../components/cards/FeaturedCard';
@@ -114,15 +114,31 @@ export default function HomePage() {
   const latestArticles = mappedArticles.slice(1, 4);
   const noteworthyReads = mappedArticles.slice(4, 9);
   
-  const categorySections = categories.map(cat => {
-    if (!cat || !cat.name) return null;
-    const catArticles = mappedArticles.filter(a => a.category?.name === cat.name).slice(0, 3);
-    return {
-      name: cat.name,
-      href: `/category/${cat.slug?.current || cat.name.toLowerCase()}`,
-      articles: catArticles
-    };
-  }).filter((section): section is any => section !== null && section.articles.length > 0);
+  const categorySections = useMemo(() => {
+    const articlesByCategory = new Map<string, any[]>();
+    for (const article of mappedArticles) {
+      const catName = article.category?.name;
+      if (!catName) continue;
+      let list = articlesByCategory.get(catName);
+      if (!list) {
+        list = [];
+        articlesByCategory.set(catName, list);
+      }
+      if (list.length < 3) {
+        list.push(article);
+      }
+    }
+
+    return categories.map(cat => {
+      if (!cat || !cat.name) return null;
+      const catArticles = articlesByCategory.get(cat.name) || [];
+      return {
+        name: cat.name,
+        href: `/category/${cat.slug?.current || cat.name.toLowerCase()}`,
+        articles: catArticles
+      };
+    }).filter((section): section is any => section !== null && section.articles.length > 0);
+  }, [categories, mappedArticles]);
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
