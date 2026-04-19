@@ -31,8 +31,8 @@ function NewsletterForm() {
     if (email) {
       try {
         await subscribeEmail(email, 'homepage');
-      } catch (error) {
-        console.error('Failed to subscribe:', error);
+      } catch {
+        // Ignore error silently
       }
       setSubscribed(true);
       setEmail('');
