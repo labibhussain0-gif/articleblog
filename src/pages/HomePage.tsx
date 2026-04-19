@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import { useState, Fragment } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import FeaturedCard from '../components/cards/FeaturedCard';
@@ -223,7 +223,7 @@ export default function HomePage() {
 
         {/* Category Sections */}
         {categorySections.map((section, i) => (
-          <Fragment key={section.name}>
+          <React.Fragment key={section.name}>
             <section className="mb-12">
             <div className="flex items-center justify-between mb-6">
               <h2
@@ -250,7 +250,7 @@ export default function HomePage() {
                 <AdBanner slot="home-category-middle" format="horizontal" />
               </section>
             )}
-          </Fragment>
+          </React.Fragment>
         ))}
 
         {/* Editor's Picks */}
