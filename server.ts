@@ -9,6 +9,12 @@ import { createServer as createViteServer } from 'vite';
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-min-32-chars';
 
+const parseSafeInt = (value: any, defaultValue: number): number => {
+  const parsed = parseInt(value as string, 10);
+  if (isNaN(parsed) || parsed < 1) return defaultValue;
+  return parsed;
+};
+
 async function startServer() {
   const app = express();
   const PORT = 3000;
@@ -86,8 +92,8 @@ async function startServer() {
   app.get('/api/v1/articles', async (req, res) => {
     try {
       const { category, page = '1', limit = '10' } = req.query;
-      const pageNum = parseInt(page as string, 10);
-      const limitNum = Math.min(parseInt(limit as string, 10), 100);
+      const pageNum = parseSafeInt(page, 1);
+      const limitNum = Math.min(parseSafeInt(limit, 10), 100);
       const skip = (pageNum - 1) * limitNum;
 
       const where: any = { status: 'PUBLISHED' };
@@ -194,8 +200,8 @@ async function startServer() {
   app.get('/api/v1/categories/:slug', async (req, res) => {
     try {
       const { page = '1', limit = '10' } = req.query;
-      const pageNum = parseInt(page as string, 10);
-      const limitNum = Math.min(parseInt(limit as string, 10), 100);
+      const pageNum = parseSafeInt(page, 1);
+      const limitNum = Math.min(parseSafeInt(limit, 10), 100);
       const skip = (pageNum - 1) * limitNum;
 
       const category = await prisma.category.findUnique({
@@ -259,8 +265,8 @@ async function startServer() {
       const { q, page = '1', limit = '10' } = req.query;
       if (!q) return res.status(400).json({ error: 'Query parameter q is required' });
 
-      const pageNum = parseInt(page as string, 10);
-      const limitNum = Math.min(parseInt(limit as string, 10), 100);
+      const pageNum = parseSafeInt(page, 1);
+      const limitNum = Math.min(parseSafeInt(limit, 10), 100);
       const skip = (pageNum - 1) * limitNum;
 
       const [articles, total] = await Promise.all([
