@@ -326,7 +326,9 @@ async function startServer() {
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    if (process.env.NODE_ENV !== "production") {
+      console.log(`Server running on http://localhost:${PORT}`);
+    }
   });
 }
 
