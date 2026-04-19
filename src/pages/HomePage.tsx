@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import { useState, Fragment } from 'react';
+import { useState, Fragment, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import FeaturedCard from '../components/cards/FeaturedCard';
@@ -86,43 +86,62 @@ export default function HomePage() {
     );
   }
 
-  const mapArticle = (a: any) => ({
-    id: a._id,
-    slug: a.slug?.current || 'untitled',
-    title: a.title || 'Untitled Article',
-    excerpt: a.excerpt || 'No excerpt available.',
-    category: { 
-      name: a.category?.name || 'Uncategorized', 
-      color: a.category?.color || '#3b82f6' 
-    },
-    author: { 
-      name: a.author?.name || 'The Daily Pulse Team', 
-      avatarUrl: (a.author?.avatar?.asset || a.author?.avatar?._ref) 
-        ? urlFor(a.author.avatar).url() 
-        : `https://ui-avatars.com/api/?name=${encodeURIComponent(a.author?.name || 'U')}&background=random` 
-    },
-    publishedAt: a.publishedAt || new Date().toISOString(),
-    readTime: a.readingTime || 5,
-    imageUrl: (a.coverImage?.asset || a.coverImage?._ref) 
-      ? urlFor(a.coverImage).url() 
-      : `https://picsum.photos/1200/600?random=${a._id}`,
-  });
+  const { mappedArticles, featuredArticle, latestArticles, noteworthyReads, categorySections } = useMemo(() => {
+    const mapArticle = (a: any) => ({
+      id: a._id,
+      slug: a.slug?.current || 'untitled',
+      title: a.title || 'Untitled Article',
+      excerpt: a.excerpt || 'No excerpt available.',
+      category: {
+        name: a.category?.name || 'Uncategorized',
+        color: a.category?.color || '#3b82f6'
+      },
+      author: {
+        name: a.author?.name || 'The Daily Pulse Team',
+        avatarUrl: (a.author?.avatar?.asset || a.author?.avatar?._ref)
+          ? urlFor(a.author.avatar).url()
+          : `https://ui-avatars.com/api/?name=${encodeURIComponent(a.author?.name || 'U')}&background=random`
+      },
+      publishedAt: a.publishedAt || new Date().toISOString(),
+      readTime: a.readingTime || 5,
+      imageUrl: (a.coverImage?.asset || a.coverImage?._ref)
+        ? urlFor(a.coverImage).url()
+        : `https://picsum.photos/1200/600?random=${a._id}`,
+    });
 
-  const mappedArticles = articles.map(mapArticle);
+    const mapped = articles.map(mapArticle);
 
-  const featuredArticle = mappedArticles[0];
-  const latestArticles = mappedArticles.slice(1, 4);
-  const noteworthyReads = mappedArticles.slice(4, 9);
-  
-  const categorySections = categories.map(cat => {
-    if (!cat || !cat.name) return null;
-    const catArticles = mappedArticles.filter(a => a.category?.name === cat.name).slice(0, 3);
+    const articlesByCategory = mapped.reduce((acc: Record<string, any[]>, article) => {
+      const catName = article.category?.name;
+      if (catName) {
+        if (!acc[catName]) {
+          acc[catName] = [];
+        }
+        if (acc[catName].length < 3) {
+          acc[catName].push(article);
+        }
+      }
+      return acc;
+    }, {});
+
+    const catSections = categories.map(cat => {
+      if (!cat || !cat.name) return null;
+      const catArticles = articlesByCategory[cat.name] || [];
+      return {
+        name: cat.name,
+        href: `/category/${cat.slug?.current || cat.name.toLowerCase()}`,
+        articles: catArticles
+      };
+    }).filter((section): section is any => section !== null && section.articles.length > 0);
+
     return {
-      name: cat.name,
-      href: `/category/${cat.slug?.current || cat.name.toLowerCase()}`,
-      articles: catArticles
+      mappedArticles: mapped,
+      featuredArticle: mapped[0],
+      latestArticles: mapped.slice(1, 4),
+      noteworthyReads: mapped.slice(4, 9),
+      categorySections: catSections
     };
-  }).filter((section): section is any => section !== null && section.articles.length > 0);
+  }, [articles, categories]);
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
