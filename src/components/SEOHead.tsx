@@ -1,3 +1,5 @@
+import { Helmet } from 'react-helmet-async';
+
 interface SEOHeadProps {
   title?: string;
   description?: string;
@@ -21,7 +23,7 @@ export default function SEOHead({
   const truncatedDesc = description.length > 160 ? description.substring(0, 157) + '...' : description;
 
   return (
-    <>
+    <Helmet>
       <title>{fullTitle}</title>
       <meta name="title" content={fullTitle} />
       <meta name="description" content={truncatedDesc} />
@@ -40,6 +42,6 @@ export default function SEOHead({
       {type === 'article' && publishedTime && <meta property="article:published_time" content={publishedTime} />}
       {type === 'article' && author && <meta property="article:author" content={author} />}
       {url && <link rel="canonical" href={url} />}
-    </>
+    </Helmet>
   );
 }
