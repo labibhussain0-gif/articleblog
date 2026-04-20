@@ -129,8 +129,10 @@ export default function HomePage() {
       <Helmet>
         <title>The Daily Pulse | Breaking News, Analysis & Culture</title>
         <meta name="description" content="The Daily Pulse delivers breaking news, in-depth analysis, and cultural coverage. Your trusted source for today's stories that matter." />
+        <link rel="canonical" href="https://articleblogwebsite.web.app/" />
         <meta property="og:title" content="The Daily Pulse | Breaking News, Analysis & Culture" />
         <meta property="og:description" content="The Daily Pulse delivers breaking news, in-depth analysis, and cultural coverage." />
+        <meta property="og:url" content="https://articleblogwebsite.web.app/" />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">
           {JSON.stringify(orgSchema)}

@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet-async';
 import { useState } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import { Clock, Calendar, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
@@ -58,8 +59,19 @@ export default function CategoryPage() {
   const totalPages = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE);
   const paginatedArticles = filteredArticles.slice((currentPage - 1) * ARTICLES_PER_PAGE, currentPage * ARTICLES_PER_PAGE);
 
+  const categoryUrl = `https://articleblogwebsite.web.app/category/${slug}`;
+
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
+      <Helmet>
+        <title>{meta.name} News & Articles | The Daily Pulse</title>
+        <meta name="description" content={meta.description} />
+        <link rel="canonical" href={categoryUrl} />
+        <meta property="og:title" content={`${meta.name} News & Articles | The Daily Pulse`} />
+        <meta property="og:description" content={meta.description} />
+        <meta property="og:url" content={categoryUrl} />
+        <meta property="og:type" content="website" />
+      </Helmet>
       {/* Category Header */}
       <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet-async';
 import { useParams, Link } from 'react-router-dom';
 import { Twitter, Linkedin, Globe, Calendar, Clock } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
@@ -36,15 +37,26 @@ export default function AuthorPage() {
     );
   }
 
-  const avatarUrl = (author.avatar?.asset || author.avatar?._ref) ? urlFor(author.avatar).url() : `https://ui-avatars.com/api/?name=${encodeURIComponent(author.name || 'U')}&background=random`;
+  const avatarUrl = (author.avatar?.asset || (author.avatar as any)?._ref) ? urlFor(author.avatar).url() : `https://ui-avatars.com/api/?name=${encodeURIComponent(author.name || 'U')}&background=random`;
   
   // Calculate total read time or we can use fake stats for total reads
   const totalArticles = articles.length;
   // Let's keep total reads static or randomized for demo as sanity might not track it natively
   const totalReads = Math.floor(Math.random() * 50) + 10 + 'K';
 
+  const authorUrl = `https://articleblogwebsite.web.app/author/${slug}`;
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+      <Helmet>
+        <title>{author.name} - Articles & Profile | The Daily Pulse</title>
+        <meta name="description" content={`Read articles and view the profile of ${author.name} on The Daily Pulse.`} />
+        <link rel="canonical" href={authorUrl} />
+        <meta property="og:title" content={`${author.name} - Articles & Profile | The Daily Pulse`} />
+        <meta property="og:description" content={`Read articles and view the profile of ${author.name} on The Daily Pulse.`} />
+        <meta property="og:url" content={authorUrl} />
+        <meta property="og:type" content="profile" />
+      </Helmet>
       {/* Author Hero */}
       <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
