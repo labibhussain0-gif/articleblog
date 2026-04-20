@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Clock, Calendar, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
@@ -42,20 +42,24 @@ export default function CategoryPage() {
     color: category?.color || '#dc2626',
   };
 
-  const filteredArticles = articles
-    .filter((article: any) => {
-      if (activeFilter === 'all') return true;
-      const published = new Date(article.publishedAt || Date.now());
-      const todayStart = startOfDay(new Date());
-      if (activeFilter === 'today') return published >= subDays(todayStart, 1);
-      if (activeFilter === 'week') return published >= subDays(todayStart, 7);
-      return true;
-    })
-    .sort((a: any, b: any) => {
-      const dateA = new Date(a.publishedAt || 0).getTime();
-      const dateB = new Date(b.publishedAt || 0).getTime();
-      return sortOrder === 'latest' ? dateB - dateA : dateA - dateB;
-    });
+  const filteredArticles = useMemo(() => {
+    const todayStart = startOfDay(new Date());
+
+    return articles
+      .filter((article: any) => {
+        if (activeFilter === 'all') return true;
+        const published = new Date(article.publishedAt || Date.now());
+        if (activeFilter === 'today') return published >= subDays(todayStart, 1);
+        if (activeFilter === 'week') return published >= subDays(todayStart, 7);
+        return true;
+      })
+      .sort((a: any, b: any) => {
+        const dateA = new Date(a.publishedAt || 0).getTime();
+        const dateB = new Date(b.publishedAt || 0).getTime();
+        return sortOrder === 'latest' ? dateB - dateA : dateA - dateB;
+      });
+  }, [articles, activeFilter, sortOrder]);
+
   const totalPages = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE);
   const paginatedArticles = filteredArticles.slice((currentPage - 1) * ARTICLES_PER_PAGE, currentPage * ARTICLES_PER_PAGE);
 
