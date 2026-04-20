@@ -107,7 +107,7 @@ export default function ArticlePage() {
 
   const articleJsonLd = {
     "@context": "https://schema.org",
-    "@type": "BlogPosting",
+    "@type": "NewsArticle",
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": articleUrl
@@ -176,6 +176,10 @@ export default function ArticlePage() {
       <Helmet>
         <title>{article.title} | The Daily Pulse</title>
         <meta name="description" content={article.excerpt || article.title} />
+        <link rel="canonical" href={articleUrl} />
+        <meta name="robots" content="max-image-preview:large" />
+        <meta name="article:published_time" content={article.publishedAt || new Date().toISOString()} />
+        {article.author?.name && <meta name="article:author" content={article.author.name} />}
         <meta property="og:title" content={article.title} />
         <meta property="og:description" content={article.excerpt || article.title} />
         <meta property="og:type" content="article" />
