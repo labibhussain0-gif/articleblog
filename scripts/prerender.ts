@@ -65,6 +65,7 @@ function generateMetaTags(options: any) {
     <meta name="twitter:title" content="${title}" />
     <meta name="twitter:description" content="${description}" />
     ${imageUrl ? `<meta name="twitter:image" content="${imageUrl}" />` : ''}
+    <link rel="canonical" href="${url}" />
   `;
 }
 
@@ -207,7 +208,35 @@ async function run() {
     
     // Create the HTML contents for inside #root
     // We convert portable text if it exists, otherwise fallback to excerpt.
-    const bodyHtml = article.body ? toHTML(article.body) : `<p>${article.excerpt}</p>`;
+    const bodyHtml = article.body ? toHTML(article.body, {
+      components: {
+        block: {
+          h1: ({ children }: any) => `<h2 class="text-4xl font-bold mt-8 mb-4">${children}</h2>`,
+          h2: ({ children }: any) => `<h2 class="text-2xl font-bold mt-10 mb-4 pt-6 border-t border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">${children}</h2>`,
+          h3: ({ children }: any) => `<h3 class="text-2xl font-bold mt-6 mb-3">${children}</h3>`,
+          h4: ({ children }: any) => `<h4 class="text-xl font-bold mt-6 mb-3">${children}</h4>`,
+          normal: ({ children }: any) => `<p class="text-slate-700 dark:text-slate-300 text-[1.05rem] leading-[1.875] mb-6">${children}</p>`,
+          blockquote: ({ children }: any) => `<blockquote class="border-l-4 border-red-600 pl-6 py-2 my-6 italic text-slate-700 dark:text-slate-300">${children}</blockquote>`,
+        },
+        types: {
+          image: ({ value }: any) => {
+            const src = (value?.asset || value?._ref) ? urlFor(value) : null;
+            if (!src) return '';
+            return `
+              <figure class="my-8">
+                <img src="${src}" alt="${value?.alt || ''}" class="w-full rounded-xl object-cover" />
+                ${value?.caption ? `<figcaption class="mt-2 text-sm text-center text-slate-500 dark:text-slate-400 italic">${value.caption}</figcaption>` : ''}
+              </figure>
+            `;
+          }
+        }
+      }
+    }) : `<p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-4">${article.excerpt}</p>`;
+
+    // We mimic the structure of the ArticlePage layout so hydration doesn't fail.
+    // Notice how we don't have all the sidebar and header elements, but the content container
+    // needs to match as close as possible for the main elements, or at least be a single child
+    // we can replace or keep without causing a mismatch.
     const bodyContent = `<div id="root"><main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 prose prose-lg dark:prose-invert"><h1>${article.title}</h1>${bodyHtml}${faqHtml}</main></div>`;
     
     const readyHtml = finalHtml.replace('<div id="root"></div>', bodyContent);

@@ -37,7 +37,7 @@ export default function AuthorPage() {
     );
   }
 
-  const avatarUrl = (author.avatar?.asset || author.avatar?._ref) ? urlFor(author.avatar).url() : `https://ui-avatars.com/api/?name=${encodeURIComponent(author.name || 'U')}&background=random`;
+  const avatarUrl = (author.avatar?.asset || (author.avatar as any)?._ref) ? urlFor(author.avatar).url() : `https://ui-avatars.com/api/?name=${encodeURIComponent(author.name || 'U')}&background=random`;
   
   // Calculate total read time or we can use fake stats for total reads
   const totalArticles = articles.length;
