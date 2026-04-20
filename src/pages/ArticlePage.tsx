@@ -7,6 +7,7 @@ import AdBanner from '../components/ads/AdBanner';
 import { useQuery } from '@tanstack/react-query';
 import { PortableText } from '@portabletext/react';
 import { groq, urlFor } from '../lib/sanity';
+import NewsletterForm from '../components/NewsletterForm';
 
 export default function ArticlePage() {
   const { slug } = useParams<{ slug: string }>();
@@ -60,7 +61,7 @@ export default function ArticlePage() {
   
   const portableTextComponents = {
     block: {
-      h1: ({children}: any) => <h1 className="text-4xl font-bold mt-8 mb-4">{children}</h1>,
+      h1: ({children}: any) => <h2 className="text-4xl font-bold mt-8 mb-4">{children}</h2>,
       h2: ({children}: any) => <h2 className="text-2xl font-bold mt-10 mb-4 pt-6 border-t border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">{children}</h2>,
       h3: ({children}: any) => <h3 className="text-2xl font-bold mt-6 mb-3">{children}</h3>,
       h4: ({children}: any) => <h4 className="text-xl font-bold mt-6 mb-3">{children}</h4>,
@@ -185,6 +186,7 @@ export default function ArticlePage() {
         <meta name="twitter:title" content={article.title} />
         <meta name="twitter:description" content={article.excerpt || article.title} />
         {coverImageUrl && <meta name="twitter:image" content={coverImageUrl} />}
+        <link rel="canonical" href={articleUrl} />
         <script type="application/ld+json">
           {JSON.stringify(articleJsonLd)}
         </script>
@@ -321,6 +323,13 @@ export default function ArticlePage() {
               <Share2 className="w-5 h-5" />
             </button>
           </div>
+        </div>
+
+        {/* Newsletter Capture */}
+        <div className="mt-12 p-8 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+          <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2" style={{ fontFamily: 'var(--font-heading)' }}>Subscribe to The Daily Pulse</h3>
+          <p className="text-slate-600 dark:text-slate-300 mb-6">Get the latest news and analysis delivered directly to your inbox.</p>
+          <NewsletterForm />
         </div>
 
           </article>

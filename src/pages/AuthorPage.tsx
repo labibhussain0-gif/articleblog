@@ -1,4 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Twitter, Linkedin, Globe, Calendar, Clock } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { PortableText } from '@portabletext/react';
@@ -43,8 +44,32 @@ export default function AuthorPage() {
   // Let's keep total reads static or randomized for demo as sanity might not track it natively
   const totalReads = Math.floor(Math.random() * 50) + 10 + 'K';
 
+  const authorUrl = `https://articleblogwebsite.web.app/author/${author.slug?.current || slug}`;
+
+  const sameAsLinks = [];
+  if (author.socialLinks?.twitter) sameAsLinks.push(author.socialLinks.twitter);
+  if (author.socialLinks?.linkedin) sameAsLinks.push(author.socialLinks.linkedin);
+  if (author.socialLinks?.website) sameAsLinks.push(author.socialLinks.website);
+
+  const authorSchema = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": author.name,
+    "url": authorUrl,
+    "image": avatarUrl,
+    "sameAs": sameAsLinks
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+      <Helmet>
+        <title>{author.name} | The Daily Pulse</title>
+        <meta name="description" content={author.bio ? `Articles by ${author.name}.` : `Read articles written by ${author.name} on The Daily Pulse.`} />
+        <link rel="canonical" href={authorUrl} />
+        <script type="application/ld+json">
+          {JSON.stringify(authorSchema)}
+        </script>
+      </Helmet>
       {/* Author Hero */}
       <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

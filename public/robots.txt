@@ -1,6 +1,23 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /preview/
 
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /preview/
+
+User-agent: GPTBot
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /preview/
+
+User-agent: PerplexityBot
+Allow: /
 Disallow: /api/
 Disallow: /admin/
 Disallow: /preview/

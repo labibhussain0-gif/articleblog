@@ -1,4 +1,5 @@
 import { useParams, Navigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Loader2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { PortableText } from '@portabletext/react';
@@ -25,8 +26,15 @@ export default function StaticPage() {
     return <Navigate to="/" replace />;
   }
 
+  const pageUrl = `https://articleblogwebsite.web.app/${slug}`;
+
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
+      <Helmet>
+        <title>{page.title} | The Daily Pulse</title>
+        <meta name="description" content={page.description || `Read about ${page.title}`} />
+        <link rel="canonical" href={pageUrl} />
+      </Helmet>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6" style={{ fontFamily: 'var(--font-heading)' }}>
           {page.title}
