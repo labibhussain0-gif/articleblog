@@ -17,6 +17,12 @@ const parseSafeInt = (value: any, defaultValue: number): number => {
   return isNaN(parsed) || parsed < 1 ? defaultValue : parsed;
 };
 
+const parseSafeInt = (value: any, defaultValue: number): number => {
+  const parsed = parseInt(value as string, 10);
+  if (isNaN(parsed) || parsed < 1) return defaultValue;
+  return parsed;
+};
+
 async function startServer() {
   const app = express();
   const PORT = 3000;
