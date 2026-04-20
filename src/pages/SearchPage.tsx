@@ -34,9 +34,10 @@ export default function SearchPage() {
           {query && (
             <button
               onClick={() => { setQuery(''); setSearchParams({}); }}
-              className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700"
+              aria-label="Clear search"
+              className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 focus-visible:ring-2"
             >
-              <X className="w-5 h-5 text-slate-400" />
+              <X className="w-5 h-5 text-slate-400" aria-hidden="true" />
             </button>
           )}
         </div>

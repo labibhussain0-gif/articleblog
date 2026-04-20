@@ -1,3 +1,6 @@
 ## 2024-05-18 - [Form Accessibility Missing Explicit Associations]
 **Learning:** Found a recurrent pattern in manual forms lacking proper explicit association between `label` and `input`. Simply wrapping inputs isn't sufficient for screen readers, especially combined with dynamic error messages. Inline form validation errors must use `aria-invalid`, `aria-describedby`, and `role="alert"` simultaneously to be reliably announced as feedback context to the active input.
 **Action:** When working on generic inputs built via `react-hook-form` without UI component libraries, ensure explicit `htmlFor`/`id` bindings are generated, implement disabled states during async operations, and enforce `aria-describedby` when errors are conditionally rendered.
+## 2024-04-20 - Dynamic Icon Button Accessibility
+**Learning:** When a button contains both an icon and dynamic visible text (like a like counter '{likes}'), a static aria-label (e.g. 'Like') will completely override the visible dynamic text for screen readers, meaning they miss out on the count data.
+**Action:** Ensure the `aria-label` includes the dynamic data (e.g. `aria-label={`${likes} Likes`}`) and set `aria-hidden="true"` on purely decorative inner SVGs to prevent redundant announcements.
