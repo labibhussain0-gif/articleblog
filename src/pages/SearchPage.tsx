@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Search as SearchIcon, X, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
@@ -8,11 +8,24 @@ import { groq, urlFor } from '../lib/sanity';
 export default function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState(searchParams.get('q') || '');
+  const [debouncedQuery, setDebouncedQuery] = useState(query);
+
+  // ⚡ Bolt: Debounce the search input by 300ms to prevent firing an API call on every single keystroke.
+  // This reduces backend load and prevents race conditions while typing.
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedQuery(query);
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [query]);
 
   const { data: results = [], isLoading } = useQuery({
-    queryKey: ['search', query],
-    queryFn: () => query.length > 2 ? groq.searchArticles(query) : Promise.resolve([]),
-    enabled: query.length > 2,
+    queryKey: ['search', debouncedQuery],
+    queryFn: () => debouncedQuery.length > 2 ? groq.searchArticles(debouncedQuery) : Promise.resolve([]),
+    enabled: debouncedQuery.length > 2,
   });
 
   return (
