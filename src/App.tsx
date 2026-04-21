@@ -45,8 +45,8 @@ function App() {
             <Route path="search" element={<SearchPage />} />
             <Route path="create" element={<CreateArticle />} />
             <Route path="profile/:username" element={<Profile />} />
-            <Route path="about" element={<StaticPage />} />
-            <Route path="contact" element={<StaticPage />} />
+            <Route path="about" element={<StaticPage slug="about" />} />
+            <Route path="contact" element={<StaticPage slug="contact" />} />
             <Route path="privacy" element={<PrivacyPolicyPage />} />
             <Route path="terms" element={<TermsPage />} />
             <Route path="cookies" element={<CookiePolicyPage />} />
