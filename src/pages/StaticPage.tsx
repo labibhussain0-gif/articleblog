@@ -5,8 +5,13 @@ import { useQuery } from '@tanstack/react-query';
 import { PortableText } from '@portabletext/react';
 import { groq } from '../lib/sanity';
 
-export default function StaticPage() {
-  const { slug } = useParams<{ slug: string }>();
+interface StaticPageProps {
+  slug?: string;
+}
+
+export default function StaticPage({ slug: propSlug }: StaticPageProps) {
+  const params = useParams<{ slug: string }>();
+  const slug = propSlug || params.slug;
 
   const { data: page, isLoading } = useQuery({
     queryKey: ['page', slug],
