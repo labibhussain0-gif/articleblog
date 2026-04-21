@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
+import { rateLimit } from 'express-rate-limit';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import path from 'path';
@@ -37,8 +38,16 @@ async function startServer() {
     });
   };
 
+  const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    limit: 5, // Limit each IP to 5 requests per `window` (here, per 15 minutes)
+    standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    message: { error: 'Too many requests from this IP, please try again after 15 minutes' }
+  });
+
   // Auth Routes
-  app.post('/api/v1/auth/register', async (req, res) => {
+  app.post('/api/v1/auth/register', authLimiter, async (req, res) => {
     try {
       const { email, username, password, name } = req.body;
       const existingUser = await prisma.user.findFirst({
@@ -61,7 +70,7 @@ async function startServer() {
     }
   });
 
-  app.post('/api/v1/auth/login', async (req, res) => {
+  app.post('/api/v1/auth/login', authLimiter, async (req, res) => {
     try {
       const { email, password } = req.body;
       const user = await prisma.user.findUnique({ where: { email } });
