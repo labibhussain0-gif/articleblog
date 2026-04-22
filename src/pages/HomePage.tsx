@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import FeaturedCard from '../components/cards/FeaturedCard';
@@ -86,43 +86,57 @@ export default function HomePage() {
     );
   }
 
-  const mapArticle = (a: any) => ({
-    id: a._id,
-    slug: a.slug?.current || 'untitled',
-    title: a.title || 'Untitled Article',
-    excerpt: a.excerpt || 'No excerpt available.',
-    category: { 
-      name: a.category?.name || 'Uncategorized', 
-      color: a.category?.color || '#3b82f6' 
-    },
-    author: { 
-      name: a.author?.name || 'The Daily Pulse Team', 
-      avatarUrl: (a.author?.avatar?.asset || a.author?.avatar?._ref) 
-        ? urlFor(a.author.avatar).url() 
-        : `https://ui-avatars.com/api/?name=${encodeURIComponent(a.author?.name || 'U')}&background=random` 
-    },
-    publishedAt: a.publishedAt || new Date().toISOString(),
-    readTime: a.readingTime || 5,
-    imageUrl: (a.coverImage?.asset || a.coverImage?._ref) 
-      ? urlFor(a.coverImage).url() 
-      : `https://picsum.photos/1200/600?random=${a._id}`,
-  });
-
-  const mappedArticles = articles.map(mapArticle);
+  // ⚡ Bolt: Memoize mapped articles to prevent re-calculating on every render
+  const mappedArticles = useMemo(() => {
+    const mapArticle = (a: any) => ({
+      id: a._id,
+      slug: a.slug?.current || 'untitled',
+      title: a.title || 'Untitled Article',
+      excerpt: a.excerpt || 'No excerpt available.',
+      category: {
+        name: a.category?.name || 'Uncategorized',
+        color: a.category?.color || '#3b82f6'
+      },
+      author: {
+        name: a.author?.name || 'The Daily Pulse Team',
+        avatarUrl: (a.author?.avatar?.asset || a.author?.avatar?._ref)
+          ? urlFor(a.author.avatar).url()
+          : `https://ui-avatars.com/api/?name=${encodeURIComponent(a.author?.name || 'U')}&background=random`
+      },
+      publishedAt: a.publishedAt || new Date().toISOString(),
+      readTime: a.readingTime || 5,
+      imageUrl: (a.coverImage?.asset || a.coverImage?._ref)
+        ? urlFor(a.coverImage).url()
+        : `https://picsum.photos/1200/600?random=${a._id}`,
+    });
+    return articles.map(mapArticle);
+  }, [articles]);
 
   const featuredArticle = mappedArticles[0];
   const latestArticles = mappedArticles.slice(1, 4);
   const noteworthyReads = mappedArticles.slice(4, 9);
-  
-  const categorySections = categories.map(cat => {
-    if (!cat || !cat.name) return null;
-    const catArticles = mappedArticles.filter(a => a.category?.name === cat.name).slice(0, 3);
-    return {
-      name: cat.name,
-      href: `/category/${cat.slug?.current || cat.name.toLowerCase()}`,
-      articles: catArticles
-    };
-  }).filter((section): section is any => section !== null && section.articles.length > 0);
+
+  // ⚡ Bolt: Group articles by category using an O(N) hash map instead of O(N*M) nested filter loop
+  const categorySections = useMemo(() => {
+    const articlesByCategory = mappedArticles.reduce((acc, article) => {
+      const catName = article.category?.name;
+      if (catName) {
+        if (!acc[catName]) acc[catName] = [];
+        acc[catName].push(article);
+      }
+      return acc;
+    }, {} as Record<string, typeof mappedArticles>);
+
+    return categories.map(cat => {
+      if (!cat || !cat.name) return null;
+      const catArticles = (articlesByCategory[cat.name] || []).slice(0, 3);
+      return {
+        name: cat.name,
+        href: `/category/${cat.slug?.current || cat.name.toLowerCase()}`,
+        articles: catArticles
+      };
+    }).filter((section): section is any => section !== null && section.articles.length > 0);
+  }, [categories, mappedArticles]);
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
