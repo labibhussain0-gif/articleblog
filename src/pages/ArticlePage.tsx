@@ -187,13 +187,9 @@ export default function ArticlePage() {
         <meta name="twitter:description" content={article.excerpt || article.title} />
         {coverImageUrl && <meta name="twitter:image" content={coverImageUrl} />}
         <link rel="canonical" href={articleUrl} />
-        <script type="application/ld+json">
-          {JSON.stringify(articleJsonLd)}
-        </script>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd).replace(/</g, '\\u003c') }} />
         {faqJsonLd && (
-          <script type="application/ld+json">
-            {JSON.stringify(faqJsonLd)}
-          </script>
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, '\\u003c') }} />
         )}
       </Helmet>
       {/* Reading Progress Bar */}
