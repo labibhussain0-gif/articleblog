@@ -24,13 +24,13 @@ const sanityClient = createClient({
 async function generateSitemap() {
   console.log('[Sitemap] Fetching data for sitemap...');
   
-  const articles = await sanityClient.fetch(`*[_type == "article" && status == "published"] { slug, publishedAt }`);
+  const articles = await sanityClient.fetch(`*[_type == "article" && status == "published"] { slug, publishedAt, title }`);
   const categories = await sanityClient.fetch(`*[_type == "category"] { slug }`);
   const authors = await sanityClient.fetch(`*[_type == "author"] { slug }`);
 
   const xmlLines: string[] = [
     `<?xml version="1.0" encoding="UTF-8"?>`,
-    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">`
   ];
 
   // Static routes
@@ -57,6 +57,25 @@ async function generateSitemap() {
     if (article.publishedAt) {
       urlBlock += `    <lastmod>${new Date(article.publishedAt).toISOString()}</lastmod>\n`;
     }
+    urlBlock += `    <news:news>\n`;
+    urlBlock += `      <news:publication>\n`;
+    urlBlock += `        <news:name>The Daily Pulse</news:name>\n`;
+    urlBlock += `        <news:language>en</news:language>\n`;
+    urlBlock += `      </news:publication>\n`;
+    if (article.publishedAt) {
+      urlBlock += `      <news:publication_date>${new Date(article.publishedAt).toISOString()}</news:publication_date>\n`;
+    }
+    if (article.title) {
+      // Escape special characters in XML
+      const escapedTitle = article.title
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
+      urlBlock += `      <news:title>${escapedTitle}</news:title>\n`;
+    }
+    urlBlock += `    </news:news>\n`;
     urlBlock += `    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>`;
     xmlLines.push(urlBlock);
   }
