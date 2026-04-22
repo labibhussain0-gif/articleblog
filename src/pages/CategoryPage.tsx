@@ -28,21 +28,6 @@ export default function CategoryPage() {
     queryFn: () => groq.getArticlesByCategory(slug),
   });
 
-  if (loadingCategory || loadingArticles) {
-    return (
-      <div className="min-h-screen bg-white dark:bg-slate-900 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-red-600" />
-      </div>
-    );
-  }
-
-  // Use Sanity category or a fallback
-  const meta = {
-    name: category?.name || slug.charAt(0).toUpperCase() + slug.slice(1),
-    description: category?.description || `Explore our latest articles in ${slug}.`,
-    color: category?.color || '#dc2626',
-  };
-
   const filteredArticles = useMemo(() => {
     const todayStart = startOfDay(new Date());
 
@@ -60,6 +45,21 @@ export default function CategoryPage() {
         return sortOrder === 'latest' ? dateB - dateA : dateA - dateB;
       });
   }, [articles, activeFilter, sortOrder]);
+
+  if (loadingCategory || loadingArticles) {
+    return (
+      <div className="min-h-screen bg-white dark:bg-slate-900 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-red-600" />
+      </div>
+    );
+  }
+
+  // Use Sanity category or a fallback
+  const meta = {
+    name: category?.name || slug.charAt(0).toUpperCase() + slug.slice(1),
+    description: category?.description || `Explore our latest articles in ${slug}.`,
+    color: category?.color || '#dc2626',
+  };
 
   const totalPages = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE);
   const paginatedArticles = filteredArticles.slice((currentPage - 1) * ARTICLES_PER_PAGE, currentPage * ARTICLES_PER_PAGE);
