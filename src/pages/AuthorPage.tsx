@@ -4,6 +4,7 @@ import { Twitter, Linkedin, Globe, Calendar, Clock } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { PortableText } from '@portabletext/react';
 import { groq, urlFor } from '../lib/sanity';
+import { portableTextComponents } from '../components/PortableTextComponents';
 import { format } from 'date-fns';
 
 export default function AuthorPage() {
@@ -82,7 +83,7 @@ export default function AuthorPage() {
               <p className="text-slate-500 dark:text-slate-400 mb-4">@{author.slug?.current || author.name.toLowerCase().replace(/\s+/g, '')}</p>
               {author.bio ? (
                 <div className="text-slate-600 dark:text-slate-300 max-w-xl mb-6 prose dark:prose-invert">
-                  <PortableText value={author.bio as any} />
+                  <PortableText value={author.bio as any} components={portableTextComponents} />
                 </div>
               ) : (
                 <p className="text-slate-600 dark:text-slate-300 max-w-xl mb-6">No biography provided.</p>

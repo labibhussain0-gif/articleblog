@@ -6,3 +6,12 @@ coverage/
 *.log
 .env*
 !.env.example
+.cache/
+.firebase/
+.gemini/
+crawl_results.json
+fetch_results.js
+metadata.json
+seo_technical_report.md
+jules_log.md
+task.md

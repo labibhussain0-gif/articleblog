@@ -8,8 +8,6 @@ const categories = [
   { name: 'Economy', href: '/category/economy' },
   { name: 'Culture', href: '/category/culture' },
   { name: 'Technology', href: '/category/tech' },
-  { name: 'Sports', href: '/category/sports' },
-  { name: 'Opinion', href: '/category/opinion' },
 ];
 
 const quickLinks = [
@@ -26,17 +24,23 @@ const legal = [
 export default function Footer() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      try {
-        await subscribeEmail(email, 'footer');
-      } catch {
-        // Ignore subscription errors
-      }
+if (!email) return;
+    setError('');
+    setLoading(true);
+    try {
+      await subscribeEmail(email, 'footer');
       setSubscribed(true);
       setEmail('');
+    } catch (err) {
+      console.error('Failed to subscribe:', err);
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -59,23 +63,30 @@ export default function Footer() {
                 Thank you for subscribing!
               </div>
             ) : (
-              <form onSubmit={handleSubscribe} className="flex gap-3 w-full md:w-auto">
-                <input
-                  type="email"
-                  aria-label="Email address for newsletter"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="flex-1 md:w-64 px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500"
-                  required
-                />
-                <button
-                  type="submit"
-                  className="px-6 py-3 bg-red-700 hover:bg-red-600 text-white font-medium rounded-lg transition-colors"
-                >
-                  Subscribe
-                </button>
-              </form>
+<div className="flex flex-col w-full md:w-auto">
+                {error && (
+                  <p className="text-red-400 text-sm mb-2">{error}</p>
+                )}
+                <form onSubmit={handleSubscribe} className="flex gap-3 w-full md:w-auto">
+                  <input
+                    type="email"
+                    aria-label="Email address for newsletter"
+                    value={email}
+                    onChange={(e) => { setEmail(e.target.value); setError(''); }}
+                    placeholder="Enter your email"
+                    className="flex-1 md:w-64 px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+                    required
+                    disabled={loading}
+                  />
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="px-6 py-3 bg-red-700 hover:bg-red-600 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loading ? '...' : 'Subscribe'}
+                  </button>
+                </form>
+              </div>
             )}
           </div>
         </div>

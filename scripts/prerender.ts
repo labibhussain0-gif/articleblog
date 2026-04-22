@@ -41,8 +41,9 @@ async function fetchSanityData() {
 
   const categories = await sanityClient.fetch(`*[_type == "category"] { name, slug, description }`);
   const authors = await sanityClient.fetch(`*[_type == "author"] { name, slug, bio, avatar }`);
+  const pages = await sanityClient.fetch(`*[_type == "page"] { title, slug, description, body }`);
 
-  return { articles, categories, authors };
+  return { articles, categories, authors, pages };
 }
 
 function ensureDirSync(dirPath: string) {
@@ -56,6 +57,7 @@ function generateMetaTags(options: any) {
   return `
     <title>${title} | The Daily Pulse</title>
     <meta name="description" content="${description}" />
+    <link rel="canonical" href="${url}" />
     <meta property="og:title" content="${title}" />
     <meta property="og:description" content="${description}" />
     <meta property="og:type" content="${type}" />
@@ -76,7 +78,7 @@ async function run() {
   }
 
   console.log('[Prerender] Fetching data from Sanity...');
-  const { articles, categories, authors } = await fetchSanityData();
+  const { articles, categories, authors, pages } = await fetchSanityData();
 
   const baseHtml = fs.readFileSync(INDEX_HTML_PATH, 'utf-8');
 
@@ -84,7 +86,8 @@ async function run() {
   const cleanHtmlTemplate = baseHtml.replace(/<title>.*?<\/title>/ims, '<!-- META -->')
                                     .replace(/<meta name="description".*?>/i, '')
                                     .replace(/<meta property="og:.*?>/ig, '')
-                                    .replace(/<meta name="twitter:.*?>/ig, '');
+                                    .replace(/<meta name="twitter:.*?>/ig, '')
+                                    .replace(/<link rel="canonical"[^>]*>/ig, '');
 
   console.log(`[Prerender] Generating ${articles.length} article pages...`);
   
@@ -279,6 +282,52 @@ async function run() {
     ensureDirSync(outDir);
     fs.writeFileSync(path.join(outDir, 'index.html'), finalHtml);
   }
+
+  // 4. Static Pages (About, Contact, etc.)
+  console.log(`[Prerender] Generating ${pages.length} static pages...`);
+  for (const page of pages) {
+    if (!page.slug?.current) continue;
+    const url = `${SITE_URL}/${page.slug.current}`;
+    const pageDescription = page.description || `Read about ${page.title} on The Daily Pulse.`;
+    const metaHtml = generateMetaTags({
+      title: page.title,
+      description: pageDescription,
+      url,
+    });
+
+    let pageContentHtml = '';
+    if (page.body && Array.isArray(page.body)) {
+      pageContentHtml = toHTML(page.body);
+    }
+
+    const bodyContent = `<div id="root"><main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12"><h1>${page.title}</h1>${pageContentHtml}</main></div>`;
+    const finalHtml = cleanHtmlTemplate.replace('<!-- META -->', metaHtml).replace('<div id="root"></div>', bodyContent);
+
+    const outDir = path.join(DIST_DIR, page.slug.current);
+    ensureDirSync(outDir);
+    fs.writeFileSync(path.join(outDir, 'index.html'), finalHtml);
+  }
+
+  // 5. Generate 404 page
+  console.log('[Prerender] Generating 404 page...');
+  const notFoundHtml = cleanHtmlTemplate
+    .replace('<!-- META -->', `
+      <title>Page Not Found | The Daily Pulse</title>
+      <meta name="description" content="The page you are looking for does not exist on The Daily Pulse." />
+      <meta name="robots" content="noindex, nofollow" />
+      <link rel="canonical" href="' + SITE_URL + '/404" />
+    `)
+    .replace('<div id="root"></div>', '<div id="root"><main style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:system-ui,-apple-system,sans-serif;padding:2rem;text-align:center;"><h1 style="font-size:6rem;margin:0;color:#D42D2D;">404</h1><p style="font-size:1.25rem;color:#475569;margin:0.5rem 0 2rem;">Page Not Found</p><a href="/" style="display:inline-block;background:#D42D2D;color:white;padding:0.75rem 1.5rem;border-radius:0.5rem;text-decoration:none;font-weight:600;">Back to Home</a></main></div>');
+  fs.writeFileSync(path.join(DIST_DIR, '404.html'), notFoundHtml);
+
+  // 6. Add canonical link to homepage
+  console.log('[Prerender] Adding canonical link to homepage...');
+  const homepageHtml = fs.readFileSync(INDEX_HTML_PATH, 'utf-8');
+  const homepageWithCanonical = homepageHtml.replace(
+    '</title>',
+    '</title>\n    <link rel="canonical" href="' + SITE_URL + '/" />'
+  );
+  fs.writeFileSync(INDEX_HTML_PATH, homepageWithCanonical);
 
   console.log('[Prerender] Done generating static files for SEO.');
 }

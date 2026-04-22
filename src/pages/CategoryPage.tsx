@@ -68,9 +68,11 @@ export default function CategoryPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
       <Helmet>
-        <title>{meta.name} | The Daily Pulse</title>
+<title>{meta.name} News & Analysis | The Daily Pulse</title>
         <meta name="description" content={meta.description} />
-        <link rel="canonical" href={categoryUrl} />
+        <link rel="canonical" href={`https://articleblogwebsite.web.app/category/${slug}`} />
+        <meta property="og:title" content={`${meta.name} | The Daily Pulse`} />
+        <meta property="og:description" content={meta.description} />
       </Helmet>
       {/* Category Header */}
       <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
