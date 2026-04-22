@@ -1,0 +1,3 @@
+## 2024-04-22 - Missing Loading States on Async Form Submissions
+**Learning:** Found multiple instances where newsletter subscription forms were missing `isSubmitting` states, leaving inputs and buttons enabled during API calls. This is an accessibility issue because screen reader users don't receive immediate feedback that their action was registered, and it allows users to accidentally trigger duplicate submissions by double-clicking.
+**Action:** Always add loading states and `disabled` attributes to interactive form elements during asynchronous operations, alongside appropriate visible feedback (like changing "Subscribe" to "Subscribing...").
