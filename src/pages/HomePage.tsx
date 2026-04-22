@@ -132,9 +132,7 @@ export default function HomePage() {
         <meta property="og:title" content="The Daily Pulse | Breaking News, Analysis & Culture" />
         <meta property="og:description" content="The Daily Pulse delivers breaking news, in-depth analysis, and cultural coverage." />
         <meta property="og:type" content="website" />
-        <script type="application/ld+json">
-          {JSON.stringify(orgSchema)}
-        </script>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema).replace(/</g, '\\u003c') }} />
       </Helmet>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 

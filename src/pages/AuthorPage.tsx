@@ -66,9 +66,7 @@ export default function AuthorPage() {
         <title>{author.name} | The Daily Pulse</title>
         <meta name="description" content={author.bio ? `Articles by ${author.name}.` : `Read articles written by ${author.name} on The Daily Pulse.`} />
         <link rel="canonical" href={authorUrl} />
-        <script type="application/ld+json">
-          {JSON.stringify(authorSchema)}
-        </script>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(authorSchema).replace(/</g, '\\u003c') }} />
       </Helmet>
       {/* Author Hero */}
       <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
