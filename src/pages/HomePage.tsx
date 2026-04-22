@@ -1,5 +1,6 @@
-import { Helmet } from 'react-helmet-async';
 import React, { useState } from 'react';
+import SEOHead from '../components/SEOHead';
+import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import FeaturedCard from '../components/cards/FeaturedCard';
@@ -10,17 +11,30 @@ import AdBanner from '../components/ads/AdBanner';
 import { groq, urlFor } from '../lib/sanity';
 import { subscribeEmail } from '../lib/firebase';
 
-const orgSchema = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "The Daily Pulse",
-  "url": "https://articleblogwebsite.web.app",
-  "logo": "https://articleblogwebsite.web.app/apple-touch-icon.png",
-  "sameAs": [
-    "https://twitter.com/thedailypulse",
-    "https://facebook.com/thedailypulse"
-  ]
-};
+const schemaData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "The Daily Pulse",
+    "url": "https://articleblogwebsite.web.app",
+    "logo": "https://articleblogwebsite.web.app/apple-touch-icon.png",
+    "sameAs": [
+      "https://twitter.com/thedailypulse",
+      "https://facebook.com/thedailypulse"
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "The Daily Pulse",
+    "url": "https://articleblogwebsite.web.app",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://articleblogwebsite.web.app/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+];
 
 function NewsletterForm() {
   const [email, setEmail] = useState('');
@@ -139,16 +153,15 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
+      <SEOHead
+        title="Breaking News, Analysis & Culture"
+        description="The Daily Pulse delivers breaking news, in-depth analysis, and cultural coverage. Your trusted source for today's stories that matter."
+        url="https://articleblogwebsite.web.app/"
+        image="https://articleblogwebsite.web.app/apple-touch-icon.png"
+        type="website"
+      />
       <Helmet>
-        <title>The Daily Pulse | Breaking News, Analysis & Culture</title>
-        <meta name="description" content="The Daily Pulse delivers breaking news, in-depth analysis, and cultural coverage. Your trusted source for today's stories that matter." />
-        <link rel="canonical" href="https://articleblogwebsite.web.app/" />
-        <meta property="og:title" content="The Daily Pulse | Breaking News, Analysis & Culture" />
-        <meta property="og:description" content="The Daily Pulse delivers breaking news, in-depth analysis, and cultural coverage." />
-        <meta property="og:type" content="website" />
-        <script type="application/ld+json">
-          {JSON.stringify(orgSchema)}
-        </script>
+        <script type="application/ld+json">{JSON.stringify(schemaData)}</script>
       </Helmet>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 

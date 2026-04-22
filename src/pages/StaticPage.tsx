@@ -1,5 +1,6 @@
 import { useLocation, Navigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import SEOHead from '../components/SEOHead';
 import { ChevronRight, Loader2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { PortableText } from '@portabletext/react';
@@ -31,22 +32,36 @@ export default function StaticPage() {
   }
 
 const pageUrl = `${SITE_URL}/${slug}`;
-  const pageTitle = `${page.title} | The Daily Pulse`;
+  const pageTitle = page.title;
   const pageDescription = page.description || `Read about ${page.title} on The Daily Pulse.`;
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
+      <SEOHead
+        title={pageTitle}
+        description={pageDescription}
+        url={pageUrl}
+        image="https://articleblogwebsite.web.app/apple-touch-icon.png"
+        type="website"
+      />
       <Helmet>
-<title>{pageTitle}</title>
-        <meta name="description" content={pageDescription} />
-        <link rel="canonical" href={pageUrl} />
-        <meta property="og:title" content={pageTitle} />
-        <meta property="og:description" content={pageDescription} />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={pageUrl} />
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content={pageTitle} />
-        <meta name="twitter:description" content={pageDescription} />
+        <script type="application/ld+json">{JSON.stringify([
+          {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": page.title,
+            "url": pageUrl,
+            "description": pageDescription
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://articleblogwebsite.web.app/" },
+              { "@type": "ListItem", "position": 2, "name": page.title, "item": pageUrl }
+            ]
+          }
+        ])}</script>
       </Helmet>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <nav className="flex items-center gap-2 text-sm text-slate-500 mb-6">

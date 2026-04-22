@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import SEOHead from '../components/SEOHead';
 import { Twitter, Linkedin, Globe, Calendar, Clock } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { PortableText } from '@portabletext/react';
@@ -63,13 +64,15 @@ export default function AuthorPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+      <SEOHead
+        title={author.name}
+        description={author.bio ? `Articles by ${author.name}. ${(typeof author.bio === 'string' ? (author.bio as string).substring(0, 100) : '')}` : `Read articles written by ${author.name} on The Daily Pulse.`}
+        url={authorUrl}
+        image={avatarUrl}
+        type="profile"
+      />
       <Helmet>
-        <title>{author.name} | The Daily Pulse</title>
-        <meta name="description" content={author.bio ? `Articles by ${author.name}.` : `Read articles written by ${author.name} on The Daily Pulse.`} />
-        <link rel="canonical" href={authorUrl} />
-        <script type="application/ld+json">
-          {JSON.stringify(authorSchema)}
-        </script>
+        <script type="application/ld+json">{JSON.stringify(authorSchema)}</script>
       </Helmet>
       {/* Author Hero */}
       <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { urlFor } from '../lib/sanity';
 
 export const portableTextComponents = {
@@ -30,12 +31,18 @@ export const portableTextComponents = {
     },
   },
   marks: {
-    link: ({value, children}: any) => (
-      <a href={value?.href} target="_blank" rel="noopener noreferrer" 
-         className="text-red-600 dark:text-red-400 hover:underline font-medium">
-        {children}
-      </a>
-    ),
+    link: ({value, children}: any) => {
+      const href = value?.href || '#';
+      const isInternal = href.startsWith('/') && !href.startsWith('//');
+      if (isInternal) {
+        return <Link to={href} className="text-red-600 dark:text-red-400 hover:underline font-medium">{children}</Link>;
+      }
+      return (
+        <a href={href} target="_blank" rel="noopener noreferrer" className="text-red-600 dark:text-red-400 hover:underline font-medium">
+          {children}
+        </a>
+      );
+    },
     strong: ({children}: any) => <strong className="font-bold text-slate-900 dark:text-white">{children}</strong>,
     em: ({children}: any) => <em className="italic">{children}</em>,
   },

@@ -3,23 +3,27 @@ Allow: /
 Disallow: /api/
 Disallow: /admin/
 Disallow: /preview/
+Disallow: /search
 
 User-agent: Googlebot
 Allow: /
 Disallow: /api/
 Disallow: /admin/
 Disallow: /preview/
+Disallow: /search
 
 User-agent: GPTBot
 Allow: /
 Disallow: /api/
 Disallow: /admin/
 Disallow: /preview/
+Disallow: /search
 
 User-agent: PerplexityBot
 Allow: /
 Disallow: /api/
 Disallow: /admin/
 Disallow: /preview/
+Disallow: /search
 
 Sitemap: https://articleblogwebsite.web.app/sitemap.xml

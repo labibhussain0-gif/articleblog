@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+import SEOHead from '../components/SEOHead';
 import { useState, useEffect, Fragment } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { format } from 'date-fns';
@@ -130,29 +131,51 @@ export default function ArticlePage() {
     };
   }
 
+  const hasExplicitFaq = article.faq && Array.isArray(article.faq) && article.faq.length > 0;
+
+  let filteredBody = article.body;
+
+  if (hasExplicitFaq && article.body) {
+    const faqQuestions = new Set(article.faq.map((f: any) => (f.question || '').trim()));
+    const blocks = article.body as any[];
+    const indicesToRemove = new Set<number>();
+    let skipNormal = false;
+
+    for (let i = 0; i < blocks.length; i++) {
+      const block = blocks[i];
+      if (block._type !== 'block') continue;
+
+      const isHeading = block.style === 'h2' || block.style === 'h3' || block.style === 'h4';
+      const text = (block.children || []).map((c: any) => c.text || '').join('').trim();
+
+      if (isHeading && faqQuestions.has(text)) {
+        skipNormal = true;
+        indicesToRemove.add(i);
+      } else if (isHeading) {
+        skipNormal = false;
+      } else if (skipNormal && block.style === 'normal') {
+        indicesToRemove.add(i);
+      }
+    }
+
+    filteredBody = blocks.filter((_: any, i: number) => !indicesToRemove.has(i));
+  }
+
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
+      <SEOHead
+        title={article.title}
+        description={article.excerpt || article.title}
+        url={articleUrl}
+        image={coverImageUrl || 'https://articleblogwebsite.web.app/apple-touch-icon.png'}
+        type="article"
+        publishedTime={article.publishedAt}
+        author={article.author?.name}
+      />
       <Helmet>
-        <title>{article.title} | The Daily Pulse</title>
-        <meta name="description" content={article.excerpt || article.title} />
-        <link rel="canonical" href={articleUrl} />
-        <meta property="og:title" content={article.title} />
-        <meta property="og:description" content={article.excerpt || article.title} />
-        <meta property="og:type" content="article" />
-        <meta property="og:url" content={articleUrl} />
-        {coverImageUrl && <meta property="og:image" content={coverImageUrl} />}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={article.title} />
-        <meta name="twitter:description" content={article.excerpt || article.title} />
-        {coverImageUrl && <meta name="twitter:image" content={coverImageUrl} />}
-        <link rel="canonical" href={articleUrl} />
-        <script type="application/ld+json">
-          {JSON.stringify(articleJsonLd)}
-        </script>
+        <script type="application/ld+json">{JSON.stringify(articleJsonLd)}</script>
         {faqJsonLd && (
-          <script type="application/ld+json">
-            {JSON.stringify(faqJsonLd)}
-          </script>
+          <script type="application/ld+json">{JSON.stringify(faqJsonLd)}</script>
         )}
       </Helmet>
       {/* Reading Progress Bar */}
@@ -227,8 +250,8 @@ export default function ArticlePage() {
 
         {/* Article Body */}
         <div className="prose prose-lg dark:prose-invert max-w-none">
-          {article.body ? (
-            <PortableText value={article.body} components={portableTextComponents} />
+          {filteredBody ? (
+            <PortableText value={filteredBody} components={portableTextComponents} />
           ) : (
              <p className="text-slate-700 dark:text-slate-300 leading-relaxed mb-4">{article.excerpt}</p>
           )}

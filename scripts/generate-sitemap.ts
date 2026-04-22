@@ -25,8 +25,14 @@ async function generateSitemap() {
   console.log('[Sitemap] Fetching data for sitemap...');
   
   const articles = await sanityClient.fetch(`*[_type == "article" && status == "published"] { slug, publishedAt }`);
-  const categories = await sanityClient.fetch(`*[_type == "category"] { slug }`);
-  const authors = await sanityClient.fetch(`*[_type == "author"] { slug }`);
+  const categories = await sanityClient.fetch(`*[_type == "category"] { 
+    slug, 
+    "latestArticleDate": *[_type == "article" && category._ref == ^._id && status == "published"] | order(publishedAt desc)[0].publishedAt 
+  }`);
+  const authors = await sanityClient.fetch(`*[_type == "author"] { 
+    slug, 
+    "latestArticleDate": *[_type == "article" && author._ref == ^._id && status == "published"] | order(publishedAt desc)[0].publishedAt 
+  }`);
 
   const xmlLines: string[] = [
     `<?xml version="1.0" encoding="UTF-8"?>`,
@@ -35,16 +41,19 @@ async function generateSitemap() {
 
   // Static routes
   const staticRoutes = [
-    { url: '/', priority: 1.0 },
-    { url: '/about', priority: 0.5 },
-    { url: '/contact', priority: 0.5 },
+    { url: '/', priority: 1.0, changefreq: 'daily' },
+    { url: '/about', priority: 0.5, changefreq: 'monthly' },
+    { url: '/contact', priority: 0.5, changefreq: 'monthly' },
+    { url: '/privacy', priority: 0.3, changefreq: 'yearly' },
+    { url: '/terms', priority: 0.3, changefreq: 'yearly' },
+    { url: '/cookies', priority: 0.3, changefreq: 'yearly' },
   ];
 
   for (const route of staticRoutes) {
     xmlLines.push(
       `  <url>\n` +
       `    <loc>${SITE_URL}${route.url}</loc>\n` +
-      `    <changefreq>daily</changefreq>\n` +
+      `    <changefreq>${route.changefreq}</changefreq>\n` +
       `    <priority>${route.priority}</priority>\n` +
       `  </url>`
     );
@@ -64,25 +73,23 @@ async function generateSitemap() {
   // Categories
   for (const category of categories) {
     if (!category.slug?.current) continue;
-    xmlLines.push(
-      `  <url>\n` +
-      `    <loc>${SITE_URL}/category/${category.slug.current}</loc>\n` +
-      `    <changefreq>weekly</changefreq>\n` +
-      `    <priority>0.6</priority>\n` +
-      `  </url>`
-    );
+    let catBlock = `  <url>\n    <loc>${SITE_URL}/category/${category.slug.current}</loc>\n`;
+    if (category.latestArticleDate) {
+      catBlock += `    <lastmod>${new Date(category.latestArticleDate).toISOString()}</lastmod>\n`;
+    }
+    catBlock += `    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n  </url>`;
+    xmlLines.push(catBlock);
   }
 
   // Authors
   for (const author of authors) {
     if (!author.slug?.current) continue;
-    xmlLines.push(
-      `  <url>\n` +
-      `    <loc>${SITE_URL}/author/${author.slug.current}</loc>\n` +
-      `    <changefreq>monthly</changefreq>\n` +
-      `    <priority>0.5</priority>\n` +
-      `  </url>`
-    );
+    let authBlock = `  <url>\n    <loc>${SITE_URL}/author/${author.slug.current}</loc>\n`;
+    if (author.latestArticleDate) {
+      authBlock += `    <lastmod>${new Date(author.latestArticleDate).toISOString()}</lastmod>\n`;
+    }
+    authBlock += `    <changefreq>monthly</changefreq>\n    <priority>0.5</priority>\n  </url>`;
+    xmlLines.push(authBlock);
   }
 
   xmlLines.push(`</urlset>`);

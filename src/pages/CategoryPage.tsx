@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import SEOHead from '../components/SEOHead';
 import { Clock, Calendar, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { format, startOfDay, subDays } from 'date-fns';
 import { useQuery } from '@tanstack/react-query';
@@ -67,12 +68,36 @@ export default function CategoryPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
+      <SEOHead
+        title={`${meta.name} News & Analysis`}
+        description={meta.description}
+        url={categoryUrl}
+        image="https://articleblogwebsite.web.app/apple-touch-icon.png"
+        type="website"
+      />
       <Helmet>
-<title>{meta.name} News & Analysis | The Daily Pulse</title>
-        <meta name="description" content={meta.description} />
-        <link rel="canonical" href={`https://articleblogwebsite.web.app/category/${slug}`} />
-        <meta property="og:title" content={`${meta.name} | The Daily Pulse`} />
-        <meta property="og:description" content={meta.description} />
+        <script type="application/ld+json">{JSON.stringify([
+          {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": `${meta.name} News`,
+            "url": categoryUrl,
+            "description": meta.description,
+            "publisher": {
+              "@type": "Organization",
+              "name": "The Daily Pulse",
+              "url": "https://articleblogwebsite.web.app"
+            }
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://articleblogwebsite.web.app/" },
+              { "@type": "ListItem", "position": 2, "name": meta.name, "item": categoryUrl }
+            ]
+          }
+        ])}</script>
       </Helmet>
       {/* Category Header */}
       <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">

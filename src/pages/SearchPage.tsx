@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Search as SearchIcon, X, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useQuery } from '@tanstack/react-query';
@@ -30,6 +31,12 @@ export default function SearchPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
+        <Helmet>
+          <title>Search | The Daily Pulse</title>
+          <meta name="description" content="Search articles on The Daily Pulse" />
+          <meta name="robots" content="noindex, nofollow" />
+          <link rel="canonical" href="https://articleblogwebsite.web.app/search" />
+        </Helmet>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Search Input */}
         <div className="relative mb-8">

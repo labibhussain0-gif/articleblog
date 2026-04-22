@@ -1,9 +1,15 @@
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { ChevronRight } from 'lucide-react';
 
 export default function CookiePolicyPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
+      <Helmet>
+        <title>Cookie Policy | The Daily Pulse</title>
+        <meta name="description" content="Understand how The Daily Pulse uses cookies, including essential, analytics, and advertising cookies like Google AdSense." />
+        <link rel="canonical" href="https://articleblogwebsite.web.app/cookies" />
+      </Helmet>
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 xl:pl-24 py-8">
         <nav className="flex items-center gap-2 text-sm text-slate-500 mb-6">
           <Link to="/" className="hover:text-slate-900 dark:hover:text-white">Home</Link>

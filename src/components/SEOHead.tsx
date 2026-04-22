@@ -3,9 +3,11 @@ interface SEOHeadProps {
   description?: string;
   image?: string;
   url?: string;
-  type?: 'website' | 'article';
+  type?: 'website' | 'article' | 'profile';
   publishedTime?: string;
   author?: string;
+  noindex?: boolean;
+  canonicalOverride?: string;
 }
 
 import { Helmet } from 'react-helmet-async';
@@ -13,11 +15,13 @@ import { Helmet } from 'react-helmet-async';
 export default function SEOHead({
   title = 'The Daily Pulse',
   description = 'The Daily Pulse delivers breaking news, in-depth analysis, and cultural coverage.',
-  image = '/og-image.jpg',
+  image = 'https://articleblogwebsite.web.app/apple-touch-icon.png',
   url = '',
   type = 'website',
   publishedTime,
   author,
+  noindex,
+  canonicalOverride,
 }: SEOHeadProps) {
   const fullTitle = title === 'The Daily Pulse' ? title : `${title} | The Daily Pulse`;
   const truncatedDesc = description.length > 160 ? description.substring(0, 157) + '...' : description;
@@ -42,6 +46,8 @@ export default function SEOHead({
       {type === 'article' && publishedTime && <meta property="article:published_time" content={publishedTime} />}
       {type === 'article' && author && <meta property="article:author" content={author} />}
       {url && <link rel="canonical" href={url} />}
+      {noindex && <meta name="robots" content="noindex, nofollow" />}
+      {canonicalOverride && <link rel="canonical" href={canonicalOverride} />}
     </Helmet>
   );
 }

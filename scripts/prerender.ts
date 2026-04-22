@@ -62,12 +62,13 @@ function generateMetaTags(options: any) {
     <meta property="og:description" content="${description}" />
     <meta property="og:type" content="${type}" />
     <meta property="og:url" content="${url}" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="The Daily Pulse" />
     ${imageUrl ? `<meta property="og:image" content="${imageUrl}" />` : ''}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${title}" />
     <meta name="twitter:description" content="${description}" />
     ${imageUrl ? `<meta name="twitter:image" content="${imageUrl}" />` : ''}
-    <link rel="canonical" href="${url}" />
   `;
 }
 
@@ -211,7 +212,35 @@ async function run() {
     
     // Create the HTML contents for inside #root
     // We convert portable text if it exists, otherwise fallback to excerpt.
-    const bodyHtml = article.body ? toHTML(article.body, {
+    // When explicit FAQ array exists, filter out FAQ headings and their answers from the body to avoid duplication
+    let filteredBody = article.body;
+    if (article.faq && Array.isArray(article.faq) && article.faq.length > 0 && article.body) {
+      const faqQuestions = new Set(article.faq.map((q: any) => (q.question || '').trim()));
+      const blocks = article.body as any[];
+      const indicesToRemove = new Set<number>();
+      let skipNormal = false;
+
+      for (let i = 0; i < blocks.length; i++) {
+        const block = blocks[i];
+        if (block._type !== 'block') continue;
+
+        const isHeading = block.style === 'h2' || block.style === 'h3' || block.style === 'h4';
+        const text = (block.children || []).map((c: any) => c.text || '').join('').trim();
+
+        if (isHeading && faqQuestions.has(text)) {
+          skipNormal = true;
+          indicesToRemove.add(i);
+        } else if (isHeading) {
+          skipNormal = false;
+        } else if (skipNormal && block.style === 'normal') {
+          indicesToRemove.add(i);
+        }
+      }
+
+      filteredBody = blocks.filter((_: any, i: number) => !indicesToRemove.has(i));
+    }
+
+    const bodyHtml = (filteredBody || article.body) ? toHTML(filteredBody || article.body, {
       components: {
         block: {
           h1: ({ children }: any) => `<h2 class="text-4xl font-bold mt-8 mb-4">${children}</h2>`,
@@ -257,9 +286,29 @@ async function run() {
       title: `Category: ${category.name}`,
       description: category.description || `Browse articles in ${category.name}`,
       url,
+      imageUrl: `${SITE_URL}/apple-touch-icon.png`,
     });
-    
-    const finalHtml = cleanHtmlTemplate.replace('<!-- META -->', metaHtml);
+
+    const categorySchema = [
+      {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": `${category.name} News`,
+        "url": url,
+        "description": category.description || `Browse articles in ${category.name}`,
+        "publisher": { "@type": "Organization", "name": "The Daily Pulse", "url": SITE_URL }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": SITE_URL },
+          { "@type": "ListItem", "position": 2, "name": category.name, "item": url }
+        ]
+      }
+    ];
+    const categorySchemaHtml = categorySchema.map(s => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join('\n');
+    const finalHtml = cleanHtmlTemplate.replace('<!-- META -->', metaHtml + '\n' + categorySchemaHtml);
     const outDir = path.join(DIST_DIR, 'category', category.slug.current);
     ensureDirSync(outDir);
     fs.writeFileSync(path.join(outDir, 'index.html'), finalHtml);
@@ -277,7 +326,27 @@ async function run() {
       type: 'profile',
     });
 
-    const finalHtml = cleanHtmlTemplate.replace('<!-- META -->', metaHtml);
+    const authorSchema = [
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": author.name,
+        "url": url,
+        "image": urlFor(author.avatar) || '',
+        "jobTitle": "Journalist",
+        "worksFor": { "@type": "Organization", "name": "The Daily Pulse", "url": SITE_URL }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": SITE_URL },
+          { "@type": "ListItem", "position": 2, "name": author.name, "item": url }
+        ]
+      }
+    ];
+    const authorSchemaHtml = authorSchema.map(s => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join('\n');
+    const finalHtml = cleanHtmlTemplate.replace('<!-- META -->', metaHtml + '\n' + authorSchemaHtml);
     const outDir = path.join(DIST_DIR, 'author', author.slug.current);
     ensureDirSync(outDir);
     fs.writeFileSync(path.join(outDir, 'index.html'), finalHtml);
@@ -293,6 +362,7 @@ async function run() {
       title: page.title,
       description: pageDescription,
       url,
+      imageUrl: `${SITE_URL}/apple-touch-icon.png`,
     });
 
     let pageContentHtml = '';
@@ -301,7 +371,25 @@ async function run() {
     }
 
     const bodyContent = `<div id="root"><main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12"><h1>${page.title}</h1>${pageContentHtml}</main></div>`;
-    const finalHtml = cleanHtmlTemplate.replace('<!-- META -->', metaHtml).replace('<div id="root"></div>', bodyContent);
+    const pageSchema = [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": page.title,
+        "url": url,
+        "description": pageDescription
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": SITE_URL },
+          { "@type": "ListItem", "position": 2, "name": page.title, "item": url }
+        ]
+      }
+    ];
+    const pageSchemaHtml = pageSchema.map(s => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join('\n');
+    const finalHtml = cleanHtmlTemplate.replace('<!-- META -->', metaHtml + '\n' + pageSchemaHtml).replace('<div id="root"></div>', bodyContent);
 
     const outDir = path.join(DIST_DIR, page.slug.current);
     ensureDirSync(outDir);
@@ -315,19 +403,54 @@ async function run() {
       <title>Page Not Found | The Daily Pulse</title>
       <meta name="description" content="The page you are looking for does not exist on The Daily Pulse." />
       <meta name="robots" content="noindex, nofollow" />
-      <link rel="canonical" href="' + SITE_URL + '/404" />
+      <link rel="canonical" href="${SITE_URL}/404" />
     `)
     .replace('<div id="root"></div>', '<div id="root"><main style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:system-ui,-apple-system,sans-serif;padding:2rem;text-align:center;"><h1 style="font-size:6rem;margin:0;color:#D42D2D;">404</h1><p style="font-size:1.25rem;color:#475569;margin:0.5rem 0 2rem;">Page Not Found</p><a href="/" style="display:inline-block;background:#D42D2D;color:white;padding:0.75rem 1.5rem;border-radius:0.5rem;text-decoration:none;font-weight:600;">Back to Home</a></main></div>');
   fs.writeFileSync(path.join(DIST_DIR, '404.html'), notFoundHtml);
 
   // 6. Add canonical link to homepage
-  console.log('[Prerender] Adding canonical link to homepage...');
+  console.log('[Prerender] Adding canonical and schema to homepage...');
   const homepageHtml = fs.readFileSync(INDEX_HTML_PATH, 'utf-8');
-  const homepageWithCanonical = homepageHtml.replace(
-    '</title>',
-    '</title>\n    <link rel="canonical" href="' + SITE_URL + '/" />'
-  );
-  fs.writeFileSync(INDEX_HTML_PATH, homepageWithCanonical);
+
+  const homepageMeta = generateMetaTags({
+    title: 'Breaking News, Analysis & Culture',
+    description: 'The Daily Pulse delivers breaking news, in-depth analysis, and cultural coverage. Your trusted source for today\'s stories that matter.',
+    url: `${SITE_URL}/`,
+    imageUrl: `${SITE_URL}/apple-touch-icon.png`,
+    type: 'website',
+  });
+  const homepageSchemas = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "The Daily Pulse",
+      "url": SITE_URL,
+      "logo": `${SITE_URL}/apple-touch-icon.png`,
+      "sameAs": ["https://twitter.com/thedailypulse", "https://facebook.com/thedailypulse"]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "The Daily Pulse",
+      "url": SITE_URL,
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": { "@type": "EntryPoint", "urlTemplate": `${SITE_URL}/search?q={search_term_string}` },
+        "query-input": "required name=search_term_string"
+      }
+    }
+  ];
+  const homepageSchemaHtml = homepageSchemas.map(s => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join('\n');
+
+  let homepageCleaned = homepageHtml
+    .replace(/<title>.*?<\/title>/ims, '<!-- META -->')
+    .replace(/<meta name="description".*?>/i, '')
+    .replace(/<meta property="og:.*?>/ig, '')
+    .replace(/<meta name="twitter:.*?>/ig, '')
+    .replace(/<link rel="canonical"[^>]*>/ig, '');
+
+  const homepageFinal = homepageCleaned.replace('<!-- META -->', homepageMeta + '\n' + homepageSchemaHtml);
+  fs.writeFileSync(INDEX_HTML_PATH, homepageFinal);
 
   console.log('[Prerender] Done generating static files for SEO.');
 }
