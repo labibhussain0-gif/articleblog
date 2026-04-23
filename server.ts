@@ -50,6 +50,20 @@ async function startServer() {
   app.post('/api/v1/auth/register', authLimiter, async (req, res) => {
     try {
       const { email, username, password, name } = req.body;
+
+      if (!email || typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ error: 'Invalid email format' });
+      }
+      if (!username || typeof username !== 'string' || username.trim().length === 0) {
+        return res.status(400).json({ error: 'Username is required' });
+      }
+      if (!password || typeof password !== 'string' || password.length < 8) {
+        return res.status(400).json({ error: 'Password must be at least 8 characters long' });
+      }
+      if (!name || typeof name !== 'string' || name.trim().length === 0) {
+        return res.status(400).json({ error: 'Name is required' });
+      }
+
       const existingUser = await prisma.user.findFirst({
         where: { OR: [{ email }, { username }] }
       });
@@ -73,6 +87,11 @@ async function startServer() {
   app.post('/api/v1/auth/login', authLimiter, async (req, res) => {
     try {
       const { email, password } = req.body;
+
+      if (!email || typeof email !== 'string' || !password || typeof password !== 'string') {
+        return res.status(400).json({ error: 'Invalid input' });
+      }
+
       const user = await prisma.user.findUnique({ where: { email } });
       if (!user) return res.status(401).json({ error: 'Invalid credentials' });
 
