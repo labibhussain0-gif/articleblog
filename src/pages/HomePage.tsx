@@ -135,21 +135,34 @@ export default function HomePage() {
       : `https://picsum.photos/1200/600?random=${a._id}`,
   });
 
-  const mappedArticles = articles.map(mapArticle);
+  const mappedArticles = React.useMemo(() => articles.map(mapArticle), [articles]);
 
   const featuredArticle = mappedArticles[0];
   const latestArticles = mappedArticles.slice(1, 4);
   const noteworthyReads = mappedArticles.slice(4, 9);
   
-  const categorySections = categories.map(cat => {
-    if (!cat || !cat.name) return null;
-    const catArticles = mappedArticles.filter(a => a.category?.name === cat.name).slice(0, 3);
-    return {
-      name: cat.name,
-      href: `/category/${cat.slug?.current || cat.name.toLowerCase()}`,
-      articles: catArticles
-    };
-  }).filter((section): section is any => section !== null && section.articles.length > 0);
+  const categorySections = React.useMemo(() => {
+    // ⚡ Bolt: Optimize O(N*M) filtering inside the map loop to O(N) by pre-grouping articles
+    // into a hash map, preventing main-thread blocking when rendering a large number of articles.
+    const articlesByCategory = mappedArticles.reduce((acc, article) => {
+      const catName = article.category?.name;
+      if (catName) {
+        if (!acc[catName]) acc[catName] = [];
+        if (acc[catName].length < 3) acc[catName].push(article);
+      }
+      return acc;
+    }, {} as Record<string, typeof mappedArticles>);
+
+    return categories.map(cat => {
+      if (!cat || !cat.name) return null;
+      const catArticles = articlesByCategory[cat.name] || [];
+      return {
+        name: cat.name,
+        href: `/category/${cat.slug?.current || cat.name.toLowerCase()}`,
+        articles: catArticles
+      };
+    }).filter((section): section is any => section !== null && section.articles.length > 0);
+  }, [categories, mappedArticles]);
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
