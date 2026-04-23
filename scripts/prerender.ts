@@ -111,7 +111,7 @@ async function run() {
 
     const jsonLd = {
       "@context": "https://schema.org",
-      "@type": "BlogPosting",
+      "@type": "NewsArticle",
       "mainEntityOfPage": {
         "@type": "WebPage",
         "@id": url

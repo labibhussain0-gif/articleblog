@@ -67,7 +67,7 @@ export default function ArticlePage() {
 
   const articleJsonLd = {
     "@context": "https://schema.org",
-    "@type": "BlogPosting",
+    "@type": "NewsArticle",
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": articleUrl
