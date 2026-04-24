@@ -30,6 +30,7 @@ export default function NewsletterForm() {
     <form onSubmit={handleSubmit} className="space-y-3">
       <input
         type="email"
+        aria-label="Email address for newsletter"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="Enter your email"

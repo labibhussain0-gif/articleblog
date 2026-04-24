@@ -138,6 +138,7 @@ export default function CategoryPage() {
             ))}
           </div>
           <select
+            aria-label="Sort articles"
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value as 'latest' | 'oldest')}
             className="px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-sm"
