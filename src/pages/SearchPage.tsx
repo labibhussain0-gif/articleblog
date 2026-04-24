@@ -43,6 +43,7 @@ export default function SearchPage() {
           <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-400" />
           <input
             type="search"
+            aria-label="Search articles"
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
