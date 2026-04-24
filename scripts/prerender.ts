@@ -111,7 +111,7 @@ async function run() {
 
     const jsonLd = {
       "@context": "https://schema.org",
-      "@type": "BlogPosting",
+      "@type": "NewsArticle",
       "mainEntityOfPage": {
         "@type": "WebPage",
         "@id": url
@@ -202,9 +202,9 @@ async function run() {
       };
     }
 
-    let schemaScripts = `<script type="application/ld+json">\n${JSON.stringify(jsonLd)}\n</script>\n`;
+    let schemaScripts = `<script type="application/ld+json">\n${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}\n</script>\n`;
     if (faqSchema) {
-      schemaScripts += `<script type="application/ld+json">\n${JSON.stringify(faqSchema)}\n</script>\n`;
+      schemaScripts += `<script type="application/ld+json">\n${JSON.stringify(faqSchema).replace(/</g, '\\u003c')}\n</script>\n`;
     }
 
     const finalHead = metaHtml + '\n' + schemaScripts;
@@ -307,7 +307,7 @@ async function run() {
         ]
       }
     ];
-    const categorySchemaHtml = categorySchema.map(s => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join('\n');
+    const categorySchemaHtml = categorySchema.map(s => `<script type="application/ld+json">${JSON.stringify(s).replace(/</g, '\\u003c')}</script>`).join('\n');
     const finalHtml = cleanHtmlTemplate.replace('<!-- META -->', metaHtml + '\n' + categorySchemaHtml);
     const outDir = path.join(DIST_DIR, 'category', category.slug.current);
     ensureDirSync(outDir);
@@ -345,7 +345,7 @@ async function run() {
         ]
       }
     ];
-    const authorSchemaHtml = authorSchema.map(s => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join('\n');
+    const authorSchemaHtml = authorSchema.map(s => `<script type="application/ld+json">${JSON.stringify(s).replace(/</g, '\\u003c')}</script>`).join('\n');
     const finalHtml = cleanHtmlTemplate.replace('<!-- META -->', metaHtml + '\n' + authorSchemaHtml);
     const outDir = path.join(DIST_DIR, 'author', author.slug.current);
     ensureDirSync(outDir);
@@ -388,7 +388,7 @@ async function run() {
         ]
       }
     ];
-    const pageSchemaHtml = pageSchema.map(s => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join('\n');
+    const pageSchemaHtml = pageSchema.map(s => `<script type="application/ld+json">${JSON.stringify(s).replace(/</g, '\\u003c')}</script>`).join('\n');
     const finalHtml = cleanHtmlTemplate.replace('<!-- META -->', metaHtml + '\n' + pageSchemaHtml).replace('<div id="root"></div>', bodyContent);
 
     const outDir = path.join(DIST_DIR, page.slug.current);
@@ -440,7 +440,7 @@ async function run() {
       }
     }
   ];
-  const homepageSchemaHtml = homepageSchemas.map(s => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join('\n');
+  const homepageSchemaHtml = homepageSchemas.map(s => `<script type="application/ld+json">${JSON.stringify(s).replace(/</g, '\\u003c')}</script>`).join('\n');
 
   let homepageCleaned = homepageHtml
     .replace(/<title>.*?<\/title>/ims, '<!-- META -->')

@@ -67,7 +67,7 @@ export default function ArticlePage() {
 
   const articleJsonLd = {
     "@context": "https://schema.org",
-    "@type": "BlogPosting",
+    "@type": "NewsArticle",
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": articleUrl
@@ -173,9 +173,9 @@ export default function ArticlePage() {
         author={article.author?.name}
       />
       <Helmet>
-        <script type="application/ld+json">{JSON.stringify(articleJsonLd)}</script>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd).replace(/</g, '\\u003c') }}></script>
         {faqJsonLd && (
-          <script type="application/ld+json">{JSON.stringify(faqJsonLd)}</script>
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, '\\u003c') }}></script>
         )}
       </Helmet>
       {/* Reading Progress Bar */}
