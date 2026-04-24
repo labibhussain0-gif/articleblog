@@ -26,4 +26,31 @@ Disallow: /admin/
 Disallow: /preview/
 Disallow: /search
 
+User-agent: ClaudeBot
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /preview/
+Disallow: /search
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /preview/
+Disallow: /search
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /preview/
+Disallow: /search
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
 Sitemap: https://articleblogwebsite.web.app/sitemap.xml

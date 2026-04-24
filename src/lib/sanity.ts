@@ -24,7 +24,7 @@ export function urlFor(source: any): any {
       height: () => ({ url: () => "https://picsum.photos/800/600?grayscale" }),
     };
   }
-  return builder.image(source);
+  return builder.image(source).format('webp').fit('max');
 }
 
 export interface SanityImageSource {
@@ -140,7 +140,8 @@ export const groq = {
         tags[]->{ _id, _type, name, slug },
         publishedAt,
         status,
-        readingTime
+        readingTime,
+        _updatedAt
       }
     `, { slug }),
 

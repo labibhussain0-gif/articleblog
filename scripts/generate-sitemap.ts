@@ -24,7 +24,7 @@ const sanityClient = createClient({
 async function generateSitemap() {
   console.log('[Sitemap] Fetching data for sitemap...');
   
-  const articles = await sanityClient.fetch(`*[_type == "article" && status == "published"] { slug, publishedAt }`);
+  const articles = await sanityClient.fetch(`*[_type == "article" && status == "published"] { slug, publishedAt, _updatedAt }`);
   const categories = await sanityClient.fetch(`*[_type == "category"] { 
     slug, 
     "latestArticleDate": *[_type == "article" && category._ref == ^._id && status == "published"] | order(publishedAt desc)[0].publishedAt 
@@ -41,20 +41,18 @@ async function generateSitemap() {
 
   // Static routes
   const staticRoutes = [
-    { url: '/', priority: 1.0, changefreq: 'daily' },
-    { url: '/about', priority: 0.5, changefreq: 'monthly' },
-    { url: '/contact', priority: 0.5, changefreq: 'monthly' },
-    { url: '/privacy', priority: 0.3, changefreq: 'yearly' },
-    { url: '/terms', priority: 0.3, changefreq: 'yearly' },
-    { url: '/cookies', priority: 0.3, changefreq: 'yearly' },
+    { url: '/' },
+    { url: '/about' },
+    { url: '/contact' },
+    { url: '/privacy' },
+    { url: '/terms' },
+    { url: '/cookies' },
   ];
 
   for (const route of staticRoutes) {
     xmlLines.push(
       `  <url>\n` +
       `    <loc>${SITE_URL}${route.url}</loc>\n` +
-      `    <changefreq>${route.changefreq}</changefreq>\n` +
-      `    <priority>${route.priority}</priority>\n` +
       `  </url>`
     );
   }
@@ -63,10 +61,12 @@ async function generateSitemap() {
   for (const article of articles) {
     if (!article.slug?.current) continue;
     let urlBlock = `  <url>\n    <loc>${SITE_URL}/article/${article.slug.current}</loc>\n`;
-    if (article.publishedAt) {
+    if (article._updatedAt) {
+      urlBlock += `    <lastmod>${new Date(article._updatedAt).toISOString()}</lastmod>\n`;
+    } else if (article.publishedAt) {
       urlBlock += `    <lastmod>${new Date(article.publishedAt).toISOString()}</lastmod>\n`;
     }
-    urlBlock += `    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>`;
+    urlBlock += `  </url>`;
     xmlLines.push(urlBlock);
   }
 
@@ -77,7 +77,7 @@ async function generateSitemap() {
     if (category.latestArticleDate) {
       catBlock += `    <lastmod>${new Date(category.latestArticleDate).toISOString()}</lastmod>\n`;
     }
-    catBlock += `    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n  </url>`;
+    catBlock += `  </url>`;
     xmlLines.push(catBlock);
   }
 
@@ -88,7 +88,7 @@ async function generateSitemap() {
     if (author.latestArticleDate) {
       authBlock += `    <lastmod>${new Date(author.latestArticleDate).toISOString()}</lastmod>\n`;
     }
-    authBlock += `    <changefreq>monthly</changefreq>\n    <priority>0.5</priority>\n  </url>`;
+    authBlock += `  </url>`;
     xmlLines.push(authBlock);
   }
 

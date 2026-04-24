@@ -59,6 +59,11 @@ export default function AuthorPage() {
     "name": author.name,
     "url": authorUrl,
     "image": avatarUrl,
+    "jobTitle": "Journalist",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "The Daily Pulse"
+    },
     "sameAs": sameAsLinks
   };
 
@@ -78,7 +83,7 @@ export default function AuthorPage() {
       <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex flex-col md:flex-row items-center gap-8">
-            <img src={avatarUrl} alt={author.name} className="w-32 h-32 rounded-full border-4 border-white dark:border-slate-700 shadow-lg object-cover" />
+            <img src={avatarUrl} alt={author.name} width={128} height={128} className="w-32 h-32 rounded-full border-4 border-white dark:border-slate-700 shadow-lg object-cover" />
             <div className="text-center md:text-left flex-1">
               <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2" style={{ fontFamily: 'var(--font-heading)' }}>
                 {author.name}
@@ -145,7 +150,7 @@ export default function AuthorPage() {
                 <article key={article._id} className="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
                   <Link to={`/article/${article.slug?.current || '#'}`} className="block">
                     <div className="relative aspect-[16/10] overflow-hidden">
-                      <img src={imgUrl} alt={article.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                      <img src={imgUrl} alt={article.title} width={600} height={375} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                     </div>
                     <div className="p-5">
                       <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors line-clamp-2" style={{ fontFamily: 'var(--font-heading)' }}>

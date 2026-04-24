@@ -33,7 +33,7 @@ function urlFor(source: any) {
 async function fetchSanityData() {
   const articles = await sanityClient.fetch(`
     *[_type == "article" && status == "published"] {
-      _id, title, slug, excerpt, body, faq, publishedAt, coverImage,
+      _id, title, slug, excerpt, body, faq, publishedAt, _updatedAt, coverImage,
       author->{ name, slug, avatar },
       category->{ name, slug }
     }
@@ -111,7 +111,7 @@ async function run() {
 
     const jsonLd = {
       "@context": "https://schema.org",
-      "@type": "BlogPosting",
+      "@type": "NewsArticle",
       "mainEntityOfPage": {
         "@type": "WebPage",
         "@id": url
@@ -121,9 +121,11 @@ async function run() {
       "image": imageUrl || "",
       "author": {
         "@type": "Person",
-        "name": authorName
+        "name": authorName,
+        "url": `${SITE_URL}/author/${article.author?.slug?.current || ''}`
       },
       "datePublished": publishedAt,
+      "dateModified": article._updatedAt || publishedAt,
       "publisher": {
         "@type": "Organization",
         "name": "The Daily Pulse",
@@ -134,7 +136,6 @@ async function run() {
       }
     };
 
-    let faqSchema = null;
     let faqHtml = '';
     
     // Attempt to extract FAQ from body if explicit FAQ array is empty
@@ -187,25 +188,7 @@ async function run() {
       parsedFaqs = state.faqs;
     }
 
-    if (parsedFaqs.length > 0) {
-      faqSchema = {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": parsedFaqs.map((q: any) => ({
-          "@type": "Question",
-          "name": q.question,
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": q.answer
-          }
-        }))
-      };
-    }
-
     let schemaScripts = `<script type="application/ld+json">\n${JSON.stringify(jsonLd)}\n</script>\n`;
-    if (faqSchema) {
-      schemaScripts += `<script type="application/ld+json">\n${JSON.stringify(faqSchema)}\n</script>\n`;
-    }
 
     const finalHead = metaHtml + '\n' + schemaScripts;
     const finalHtml = cleanHtmlTemplate.replace('<!-- META -->', finalHead);

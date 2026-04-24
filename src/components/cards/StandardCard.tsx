@@ -25,6 +25,10 @@ export default function StandardCard({ article }: StandardCardProps) {
           <img
             src={article.imageUrl || 'https://picsum.photos/600/400'}
             alt={article.title}
+            width={600}
+            height={375}
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
           {/* Category Pill */}
@@ -54,6 +58,8 @@ export default function StandardCard({ article }: StandardCardProps) {
               <img
                 src={article.author.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(article.author.name)}&background=random`}
                 alt={article.author.name}
+                width={32}
+                height={32}
                 className="w-8 h-8 rounded-full"
               />
               <span className="text-sm font-medium text-slate-700 dark:text-slate-200">

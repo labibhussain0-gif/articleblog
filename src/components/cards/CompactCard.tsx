@@ -22,6 +22,10 @@ export default function CompactCard({ article }: CompactCardProps) {
           <img
             src={article.imageUrl || 'https://picsum.photos/200/200'}
             alt={article.title}
+            width={96}
+            height={96}
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
           />
         </div>

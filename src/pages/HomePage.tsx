@@ -161,9 +161,11 @@ export default function HomePage() {
         type="website"
       />
       <Helmet>
-        <script type="application/ld+json">{JSON.stringify(schemaData)}</script>
+        <script type="application/ld+json">{JSON.stringify(schemaData[0])}</script>
+        <script type="application/ld+json">{JSON.stringify(schemaData[1])}</script>
       </Helmet>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <h1 className="sr-only">The Daily Pulse — Breaking News, Analysis &amp; Culture</h1>
 
         {/* Hero Section: Featured + Latest */}
         {featuredArticle && (
@@ -302,6 +304,10 @@ export default function HomePage() {
                     <img
                       src={article.imageUrl || 'https://picsum.photos/600/400'}
                       alt={article.title}
+                      width={600}
+                      height={338}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>

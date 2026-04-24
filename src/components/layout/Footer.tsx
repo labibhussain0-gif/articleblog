@@ -7,7 +7,7 @@ const categories = [
   { name: 'Politics', href: '/category/politics' },
   { name: 'Economy', href: '/category/economy' },
   { name: 'Culture', href: '/category/culture' },
-  { name: 'Technology', href: '/category/tech' },
+  { name: 'Technology', href: '/category/technology' },
 ];
 
 const quickLinks = [

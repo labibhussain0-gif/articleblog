@@ -24,6 +24,9 @@ export default function FeaturedCard({ article }: FeaturedCardProps) {
           <img
             src={article.imageUrl || 'https://picsum.photos/1200/600'}
             alt={article.title}
+            width={1200}
+            height={504}
+            fetchPriority="high"
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
           {/* Gradient Overlay */}
@@ -54,6 +57,8 @@ export default function FeaturedCard({ article }: FeaturedCardProps) {
               <img
                 src={article.author.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(article.author.name)}&background=random`}
                 alt={article.author.name}
+                width={40}
+                height={40}
                 className="w-10 h-10 rounded-full border-2 border-white"
               />
               <div className="flex flex-col">

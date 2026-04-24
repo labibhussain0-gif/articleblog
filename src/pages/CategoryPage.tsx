@@ -156,7 +156,7 @@ export default function CategoryPage() {
               <article key={article._id} className="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
                 <Link to={`/article/${article.slug?.current}`} className="block">
                   <div className="relative aspect-[16/10] overflow-hidden">
-                    <img src={imgUrl} alt={article.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                    <img src={imgUrl} alt={article.title} width={600} height={375} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                     {article.category && (
                       <span className="absolute top-3 left-3 px-3 py-1 text-xs font-semibold bg-white text-slate-900 rounded-full">
                         {article.category.name}
@@ -170,7 +170,7 @@ export default function CategoryPage() {
                     <p className="text-slate-600 dark:text-slate-300 text-sm mb-4 line-clamp-2">{article.excerpt}</p>
                     <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                       <div className="flex items-center gap-2">
-                        <img src={avatarUrl} alt={article.author?.name} className="w-6 h-6 rounded-full object-cover" />
+                        <img src={avatarUrl} alt={article.author?.name} width={24} height={24} className="w-6 h-6 rounded-full object-cover" />
                         <span>{article.author?.name || 'Unknown Author'}</span>
                       </div>
                       <div className="flex items-center gap-3">

@@ -1,0 +1,22 @@
+# The Daily Pulse
+> Breaking news, in-depth analysis, and cultural coverage on AI policy, tariffs, and technology regulation.
+
+## Featured Articles
+- [KOSA Implementation Timeline 2026](https://articleblogwebsite.web.app/article/kosa-implementation-timeline-2026): When new online safety rules take effect
+- [GUARDRAILS Act Explained](https://articleblogwebsite.web.app/article/guardrails-act-explained): The bipartisan push to save state AI protections
+- [Congress AI Safety Act Explainer](https://articleblogwebsite.web.app/article/congress-ai-safety-act-explainer): What the new legislation means
+
+## Categories
+- [Technology](https://articleblogwebsite.web.app/category/technology): AI regulation and tech policy
+- [Economy](https://articleblogwebsite.web.app/category/economy): Tariffs, trade, and economic analysis
+- [Politics](https://articleblogwebsite.web.app/category/politics): Legislative coverage and policy
+- [Culture](https://articleblogwebsite.web.app/category/culture): Streaming, media, and cultural analysis
+
+## Authors
+- [Zoya Khan](https://articleblogwebsite.web.app/author/zoya-khan): Journalist
+- [Aarav Mehta](https://articleblogwebsite.web.app/author/aarav-mehta): Journalist
+- [Vikram Singh](https://articleblogwebsite.web.app/author/vikram-singh): Journalist
+
+## About
+- [About Us](https://articleblogwebsite.web.app/about)
+- [Contact](https://articleblogwebsite.web.app/contact)

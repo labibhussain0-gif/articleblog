@@ -67,7 +67,7 @@ export default function ArticlePage() {
 
   const articleJsonLd = {
     "@context": "https://schema.org",
-    "@type": "BlogPosting",
+    "@type": "NewsArticle",
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": articleUrl
@@ -77,9 +77,11 @@ export default function ArticlePage() {
     "image": coverImageUrl || "",
     "author": {
       "@type": "Person",
-      "name": article.author?.name || 'Unknown'
+      "name": article.author?.name || 'Unknown',
+      "url": `https://articleblogwebsite.web.app/author/${article.author?.slug?.current || ''}`
     },
     "datePublished": article.publishedAt || new Date().toISOString(),
+    "dateModified": article._updatedAt || article.publishedAt || new Date().toISOString(),
     "publisher": {
       "@type": "Organization",
       "name": "The Daily Pulse",
@@ -90,7 +92,6 @@ export default function ArticlePage() {
     }
   };
 
-  let faqJsonLd = null;
   let parsedFaqs = [];
   if (article.faq && Array.isArray(article.faq) && article.faq.length > 0) {
     parsedFaqs = article.faq;
@@ -114,21 +115,6 @@ export default function ArticlePage() {
       }
     }
     if (currentQuestion && currentAnswer) parsedFaqs.push({ question: currentQuestion, answer: currentAnswer.trim() });
-  }
-
-  if (parsedFaqs.length > 0) {
-    faqJsonLd = {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": parsedFaqs.map((q: any) => ({
-        "@type": "Question",
-        "name": q.question,
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": q.answer
-        }
-      }))
-    };
   }
 
   const hasExplicitFaq = article.faq && Array.isArray(article.faq) && article.faq.length > 0;
@@ -158,7 +144,17 @@ export default function ArticlePage() {
       }
     }
 
-    filteredBody = blocks.filter((_: any, i: number) => !indicesToRemove.has(i));
+    filteredBody = blocks.filter((_: any, i: number) => {
+      if (indicesToRemove.has(i)) return false;
+      if (hasExplicitFaq) {
+        const block = blocks[i];
+        if (block._type === 'block' && (block.style === 'h2' || block.style === 'h3' || block.style === 'h4')) {
+          const text = (block.children || []).map((c: any) => c.text || '').join('').trim();
+          if (text === 'Frequently Asked Questions') return false;
+        }
+      }
+      return true;
+    });
   }
 
   return (
@@ -174,9 +170,6 @@ export default function ArticlePage() {
       />
       <Helmet>
         <script type="application/ld+json">{JSON.stringify(articleJsonLd)}</script>
-        {faqJsonLd && (
-          <script type="application/ld+json">{JSON.stringify(faqJsonLd)}</script>
-        )}
       </Helmet>
       {/* Reading Progress Bar */}
       <div className="fixed top-0 left-0 right-0 h-1 bg-slate-200 dark:bg-slate-700 z-50">
@@ -220,9 +213,9 @@ export default function ArticlePage() {
           {/* Author & Meta */}
           <div className="flex items-center justify-between">
             <Link to={`/author/${article.author?.slug?.current || '#'}`} className="flex items-center gap-4">
-              <img src={authorAvatarUrl} alt={article.author?.name} className="w-12 h-12 rounded-full object-cover" />
+              <img src={authorAvatarUrl} alt={article.author?.name} width={48} height={48} className="w-12 h-12 rounded-full object-cover" />
               <div>
-                <p className="font-semibold text-slate-900 dark:text-white">{article.author?.name}</p>
+                <p className="font-semibold text-slate-900 dark:text-white">By {article.author?.name}</p>
               </div>
             </Link>
             <div className="flex items-center gap-4 text-sm text-slate-500">
@@ -238,6 +231,9 @@ export default function ArticlePage() {
             <img
               src={coverImageUrl}
               alt={article.coverImage?.alt || article.title}
+              width={1200}
+              height={675}
+              fetchPriority="high"
               className="w-full aspect-[16/9] object-cover rounded-xl"
             />
             {article.coverImage?.caption && (
@@ -336,7 +332,7 @@ export default function ArticlePage() {
                       return (
                         <li key={r._id}>
                           <Link to={`/article/${r.slug?.current || '#'}`} className="group flex gap-3">
-                            <img src={rImg} alt={r.title} className="w-20 h-14 object-cover rounded flex-shrink-0" />
+                            <img src={rImg} alt={r.title} width={160} height={112} loading="lazy" decoding="async" className="w-20 h-14 object-cover rounded flex-shrink-0" />
                             <p className="text-sm font-semibold line-clamp-3 group-hover:text-red-600 transition-colors text-slate-700 dark:text-slate-300">
                               {r.title}
                             </p>
@@ -390,6 +386,10 @@ export default function ArticlePage() {
                       <img
                         src={imgUrl}
                         alt={relatedArticle.title}
+                        width={600}
+                        height={400}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>

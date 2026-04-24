@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(npx vite:*)",
+      "Bash(./node_modules/.bin/vite build:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run:*)",
+      "Bash(/Users/huss./news:blogwebsite/blogforge/node_modules/.bin/tsc --noEmit 2>&1)",
+      "Bash(./node_modules/.bin/tsc --noEmit 2>&1)",
+      "Bash(npm install:*)",
+      "Bash(node:*)",
+      "Bash(git ls-tree:*)"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "npm",
+    "playwright"
+  ]
+}
