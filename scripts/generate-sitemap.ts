@@ -24,7 +24,7 @@ const sanityClient = createClient({
 async function generateSitemap() {
   console.log('[Sitemap] Fetching data for sitemap...');
   
-  const articles = await sanityClient.fetch(`*[_type == "article" && status == "published"] { slug, publishedAt, _updatedAt }`);
+  const articles = await sanityClient.fetch(`*[_type == "article" && status == "published"] { title, slug, publishedAt, _updatedAt }`);
   const categories = await sanityClient.fetch(`*[_type == "category"] { 
     slug, 
     "latestArticleDate": *[_type == "article" && category._ref == ^._id && status == "published"] | order(publishedAt desc)[0].publishedAt 
@@ -36,7 +36,7 @@ async function generateSitemap() {
 
   const xmlLines: string[] = [
     `<?xml version="1.0" encoding="UTF-8"?>`,
-    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">`
   ];
 
   // Static routes
@@ -61,11 +61,19 @@ async function generateSitemap() {
   for (const article of articles) {
     if (!article.slug?.current) continue;
     let urlBlock = `  <url>\n    <loc>${SITE_URL}/article/${article.slug.current}</loc>\n`;
-    if (article._updatedAt) {
-      urlBlock += `    <lastmod>${new Date(article._updatedAt).toISOString()}</lastmod>\n`;
-    } else if (article.publishedAt) {
-      urlBlock += `    <lastmod>${new Date(article.publishedAt).toISOString()}</lastmod>\n`;
-    }
+
+    const dateStr = article.publishedAt ? new Date(article.publishedAt).toISOString() : new Date().toISOString();
+    const lastModStr = article._updatedAt ? new Date(article._updatedAt).toISOString() : dateStr;
+
+    urlBlock += `    <lastmod>${lastModStr}</lastmod>\n`;
+    urlBlock += `    <news:news>\n`;
+    urlBlock += `      <news:publication>\n`;
+    urlBlock += `        <news:name>The Daily Pulse</news:name>\n`;
+    urlBlock += `        <news:language>en</news:language>\n`;
+    urlBlock += `      </news:publication>\n`;
+    urlBlock += `      <news:publication_date>${dateStr}</news:publication_date>\n`;
+    urlBlock += `      <news:title>${article.title ? article.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : 'Article'}</news:title>\n`;
+    urlBlock += `    </news:news>\n`;
     urlBlock += `  </url>`;
     xmlLines.push(urlBlock);
   }
