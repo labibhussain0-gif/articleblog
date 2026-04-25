@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import SEOHead from '../components/SEOHead';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
@@ -141,15 +141,28 @@ export default function HomePage() {
   const latestArticles = mappedArticles.slice(1, 4);
   const noteworthyReads = mappedArticles.slice(4, 9);
   
-  const categorySections = categories.map(cat => {
-    if (!cat || !cat.name) return null;
-    const catArticles = mappedArticles.filter(a => a.category?.name === cat.name).slice(0, 3);
-    return {
-      name: cat.name,
-      href: `/category/${cat.slug?.current || cat.name.toLowerCase()}`,
-      articles: catArticles
-    };
-  }).filter((section): section is any => section !== null && section.articles.length > 0);
+  // ⚡ Bolt: Prevent O(N*M) complexity by pre-grouping articles into a hash map
+  // for O(1) lookups per category, and memoizing the result to prevent unnecessary re-execution
+  const categorySections = useMemo(() => {
+    const articlesByCategory = mappedArticles.reduce((acc, article) => {
+      const catName = article.category?.name;
+      if (catName) {
+        if (!acc[catName]) acc[catName] = [];
+        acc[catName].push(article);
+      }
+      return acc;
+    }, {} as Record<string, typeof mappedArticles>);
+
+    return categories.map(cat => {
+      if (!cat || !cat.name) return null;
+      const catArticles = (articlesByCategory[cat.name] || []).slice(0, 3);
+      return {
+        name: cat.name,
+        href: `/category/${cat.slug?.current || cat.name.toLowerCase()}`,
+        articles: catArticles
+      };
+    }).filter((section): section is any => section !== null && section.articles.length > 0);
+  }, [categories, mappedArticles]);
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
