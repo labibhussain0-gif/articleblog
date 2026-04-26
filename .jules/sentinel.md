@@ -6,3 +6,7 @@
 **Vulnerability:** The `SchemaMarkup.tsx` component injected JSON-LD schema using `dangerouslySetInnerHTML` with a raw `JSON.stringify(schema)`. If injected fields contained `</script>` tags, an attacker could break out of the JSON context and execute arbitrary JavaScript.
 **Learning:** `JSON.stringify` does not escape HTML characters, making it unsafe to inject directly into `<script>` tags when the data contains unsanitized user input.
 **Prevention:** Always escape the `<` character (e.g., `.replace(/</g, '\\u003c')`) when injecting JSON strings into HTML `<script>` blocks to prevent XSS.
+## 2025-02-21 - Prisma Object Injection in Authentication Routes
+**Vulnerability:** The `login` and `register` endpoints in `server.ts` were reading `email`, `username`, `password`, and `name` from `req.body` and passing them directly into `prisma.user.findUnique` and `prisma.user.findFirst` queries without verifying they were strings.
+**Learning:** If an attacker sends a JSON payload with an object instead of a string (e.g., `{"email": {"not": "admin@example.com"}}`), they can manipulate the database query. This can lead to unauthorized access, bypassing authentication, or extracting data.
+**Prevention:** Always explicitly validate that user inputs coming from request bodies or queries are of the expected primitive types (like `string`) before using them in database queries, especially ORMs like Prisma that support complex nested query objects.
