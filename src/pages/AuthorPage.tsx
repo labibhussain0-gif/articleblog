@@ -100,18 +100,18 @@ export default function AuthorPage() {
               {author.socialLinks && (
                 <div className="flex items-center justify-center md:justify-start gap-4">
                   {author.socialLinks.twitter && (
-                    <a href={author.socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
-                      <Twitter className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+                    <a href={author.socialLinks.twitter} target="_blank" rel="noopener noreferrer" aria-label="Twitter" className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors focus-visible:ring-2 focus-visible:outline-none">
+                      <Twitter className="w-5 h-5 text-slate-600 dark:text-slate-300" aria-hidden="true" />
                     </a>
                   )}
                   {author.socialLinks.linkedin && (
-                    <a href={author.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
-                      <Linkedin className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+                    <a href={author.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors focus-visible:ring-2 focus-visible:outline-none">
+                      <Linkedin className="w-5 h-5 text-slate-600 dark:text-slate-300" aria-hidden="true" />
                     </a>
                   )}
                   {author.socialLinks.website && (
-                    <a href={author.socialLinks.website} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
-                      <Globe className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+                    <a href={author.socialLinks.website} target="_blank" rel="noopener noreferrer" aria-label="Website" className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors focus-visible:ring-2 focus-visible:outline-none">
+                      <Globe className="w-5 h-5 text-slate-600 dark:text-slate-300" aria-hidden="true" />
                     </a>
                   )}
                 </div>
