@@ -4,14 +4,18 @@ import { subscribeEmail } from '../lib/firebase';
 export default function NewsletterForm() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
+      setLoading(true);
       try {
         await subscribeEmail(email, 'newsletter');
       } catch (error) {
         console.error('Failed to subscribe:', error);
+      } finally {
+        setLoading(false);
       }
       setSubscribed(true);
       setEmail('');
@@ -33,14 +37,17 @@ export default function NewsletterForm() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="Enter your email"
-        className="w-full px-4 py-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-red-700/50"
+        aria-label="Email address for newsletter"
+        className="w-full px-4 py-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-red-700/50 disabled:opacity-50"
         required
+        disabled={loading}
       />
       <button
         type="submit"
-        className="w-full px-4 py-2.5 bg-red-700 text-white font-semibold rounded-lg hover:bg-red-800 transition-colors text-sm"
+        disabled={loading}
+        className="w-full px-4 py-2.5 bg-red-700 text-white font-semibold rounded-lg hover:bg-red-800 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Subscribe Now
+        {loading ? 'Subscribing...' : 'Subscribe Now'}
       </button>
     </form>
   );
