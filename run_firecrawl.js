@@ -1,3 +1,4 @@
+import fs from 'fs';
 const apiKey = 'fc-650d470958d04c238954d7eb2c68357b';
 const url = 'https://articleblogwebsite.web.app/';
 
@@ -31,7 +32,6 @@ async function crawl() {
         const statusData = await statusRes.json();
         console.log("Status:", statusData.status);
         if (statusData.status === 'completed') {
-          const fs = require('fs');
           fs.writeFileSync('crawl_results.json', JSON.stringify(statusData.data, null, 2));
           console.log("Saved to crawl_results.json");
           break;
