@@ -16,7 +16,7 @@ export const portableTextComponents = {
       if (!src) return null;
       return (
         <figure className="my-8">
-          <img
+          <img width={800} height={450}
             src={src}
             alt={value?.alt || ''}
             className="w-full rounded-xl object-cover"

@@ -54,7 +54,7 @@ export default function PrivacyPolicyPage() {
           </ul>
 
           <h2>5. Contact Us</h2>
-          <p>If you have any questions about this privacy policy or our privacy practices, please contact us at privacy@blogforge.example.com.</p>
+          <p>If you have any questions about this privacy policy or our privacy practices, please contact us at privacy@articleblogwebsite.web.app.</p>
         </div>
       </div>
     </div>

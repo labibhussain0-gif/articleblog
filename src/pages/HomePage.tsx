@@ -165,7 +165,7 @@ export default function HomePage() {
         <script type="application/ld+json">{JSON.stringify(schemaData[1])}</script>
       </Helmet>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="sr-only">The Daily Pulse — Breaking News, Analysis &amp; Culture</h1>
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-8" style={{ fontFamily: 'var(--font-heading)' }}>The Daily Pulse — Breaking News, Analysis &amp; Culture</h1>
 
         {/* Hero Section: Featured + Latest */}
         {featuredArticle && (
