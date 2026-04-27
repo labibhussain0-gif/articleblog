@@ -89,7 +89,7 @@ export default function SearchPage() {
             return (
               <article key={article._id} className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                 <Link to={`/article/${article.slug?.current}`} className="flex flex-col sm:flex-row gap-6 p-6">
-                  <img src={imgUrl} alt={article.title} className="w-full sm:w-32 h-48 sm:h-24 object-cover rounded-lg flex-shrink-0" />
+                  <img src={imgUrl} width={128} height={96} alt={article.title} className="w-full sm:w-32 h-48 sm:h-24 object-cover rounded-lg flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
                       {article.category && (

@@ -14,6 +14,7 @@ const StaticPage = lazy(() => import('./pages/StaticPage'));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
 const CookiePolicyPage = lazy(() => import('./pages/CookiePolicyPage'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 import React, { useEffect, lazy, Suspense } from 'react';
 import api from './services/api';
 import { useAuthStore } from './stores/authStore';
@@ -51,6 +52,7 @@ function App() {
             <Route path="privacy" element={<PrivacyPolicyPage />} />
             <Route path="terms" element={<TermsPage />} />
             <Route path="cookies" element={<CookiePolicyPage />} />
+            <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
         </Suspense>

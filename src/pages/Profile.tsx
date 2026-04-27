@@ -19,7 +19,7 @@ export default function Profile() {
   return (
     <div className="max-w-3xl mx-auto py-12">
       <div className="flex items-center gap-8 mb-12">
-        <img 
+        <img width={128} height={128}
           src={user?.avatarUrl || `https://ui-avatars.com/api/?name=${user?.name}&size=128`} 
           alt={user?.name} 
           className="w-32 h-32 rounded-full border-4 border-white dark:border-gray-800 shadow-lg"
