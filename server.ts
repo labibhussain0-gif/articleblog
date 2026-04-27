@@ -50,6 +50,13 @@ async function startServer() {
   app.post('/api/v1/auth/register', authLimiter, async (req, res) => {
     try {
       const { email, username, password, name } = req.body;
+
+      // Security: Validate inputs are strings to prevent Prisma object injection
+      if (typeof email !== 'string' || typeof username !== 'string' ||
+          typeof password !== 'string' || typeof name !== 'string') {
+        return res.status(400).json({ error: 'Invalid input format' });
+      }
+
       const existingUser = await prisma.user.findFirst({
         where: { OR: [{ email }, { username }] }
       });
@@ -73,6 +80,12 @@ async function startServer() {
   app.post('/api/v1/auth/login', authLimiter, async (req, res) => {
     try {
       const { email, password } = req.body;
+
+      // Security: Validate inputs are strings to prevent Prisma object injection
+      if (typeof email !== 'string' || typeof password !== 'string') {
+        return res.status(400).json({ error: 'Invalid input format' });
+      }
+
       const user = await prisma.user.findUnique({ where: { email } });
       if (!user) return res.status(401).json({ error: 'Invalid credentials' });
 
