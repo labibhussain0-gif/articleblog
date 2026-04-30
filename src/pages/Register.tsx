@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { useAuthStore } from '../stores/authStore';
+import { Helmet } from 'react-helmet-async';
 
 const registerSchema = z.object({
   name: z.string().min(2),
@@ -33,6 +34,10 @@ export default function Register() {
 
   return (
     <div className="flex min-h-[80vh] flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+      <Helmet>
+        <title>Create Account | The Daily Pulse</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-white">
           Create a new account

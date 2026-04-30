@@ -294,7 +294,7 @@ export default function HomePage() {
               </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {latestArticles.slice(0, 3).map((article) => (
+              {mappedArticles.slice(4, 7).map((article) => (
                 <Link
                   key={article.id}
                   to={`/article/${article.slug}`}

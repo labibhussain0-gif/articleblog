@@ -45,9 +45,8 @@ export default function SEOHead({
       <meta name="twitter:image" content={image} />
       {type === 'article' && publishedTime && <meta property="article:published_time" content={publishedTime} />}
       {type === 'article' && author && <meta property="article:author" content={author} />}
-      {url && <link rel="canonical" href={url} />}
+      {!noindex && (canonicalOverride || url) && <link rel="canonical" href={canonicalOverride || url} />}
       {noindex && <meta name="robots" content="noindex, nofollow" />}
-      {canonicalOverride && <link rel="canonical" href={canonicalOverride} />}
     </Helmet>
   );
 }

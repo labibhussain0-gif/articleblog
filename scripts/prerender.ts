@@ -55,9 +55,9 @@ function ensureDirSync(dirPath: string) {
 function generateMetaTags(options: any) {
   const { title, description, url, imageUrl, type = 'website' } = options;
   return `
-    <title>${title} | The Daily Pulse</title>
-    <meta name="description" content="${description}" />
-    <link rel="canonical" href="${url}" />
+    <title data-rh="true">${title} | The Daily Pulse</title>
+    <meta data-rh="true" name="description" content="${description}" />
+    <link data-rh="true" rel="canonical" href="${url}" />
     <meta property="og:title" content="${title}" />
     <meta property="og:description" content="${description}" />
     <meta property="og:type" content="${type}" />
@@ -226,7 +226,7 @@ async function run() {
     const bodyHtml = (filteredBody || article.body) ? toHTML(filteredBody || article.body, {
       components: {
         block: {
-          h1: ({ children }: any) => `<h2 class="text-4xl font-bold mt-8 mb-4">${children}</h2>`,
+          h1: ({ children }: any) => `<h1 class="text-4xl font-bold mt-8 mb-4">${children}</h1>`,
           h2: ({ children }: any) => `<h2 class="text-2xl font-bold mt-10 mb-4 pt-6 border-t border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">${children}</h2>`,
           h3: ({ children }: any) => `<h3 class="text-2xl font-bold mt-6 mb-3">${children}</h3>`,
           h4: ({ children }: any) => `<h4 class="text-xl font-bold mt-6 mb-3">${children}</h4>`,
@@ -252,7 +252,7 @@ async function run() {
     // Notice how we don't have all the sidebar and header elements, but the content container
     // needs to match as close as possible for the main elements, or at least be a single child
     // we can replace or keep without causing a mismatch.
-    const bodyContent = `<div id="root"><main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 prose prose-lg dark:prose-invert"><h1>${article.title}</h1>${bodyHtml}${faqHtml}</main></div>`;
+    const bodyContent = `<div id="root"><main id="main-content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 prose prose-lg dark:prose-invert"><h1>${article.title}</h1>${bodyHtml}${faqHtml}</main></div>`;
     
     const readyHtml = finalHtml.replace('<div id="root"></div>', bodyContent);
 
@@ -300,7 +300,7 @@ async function run() {
         <p>${article.excerpt || ''}</p>
       </article>
     `).join('');
-    const categoryBodyContent = `<div id="root"><main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"><h1>${category.name} News</h1>${categoryArticleListHtml}</main></div>`;
+    const categoryBodyContent = `<div id="root"><main id="main-content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"><h1>${category.name} News</h1>${categoryArticleListHtml}</main></div>`;
     
     const finalHtml = cleanHtmlTemplate.replace('<!-- META -->', metaHtml + '\n' + categorySchemaHtml).replace('<div id="root"></div>', categoryBodyContent);
     const outDir = path.join(DIST_DIR, 'category', category.slug.current);
@@ -349,7 +349,7 @@ async function run() {
         <p>${article.excerpt || ''}</p>
       </article>
     `).join('');
-    const authorBodyContent = `<div id="root"><main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"><h1>Articles by ${author.name}</h1>${authorArticleListHtml}</main></div>`;
+    const authorBodyContent = `<div id="root"><main id="main-content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"><h1>Articles by ${author.name}</h1>${authorArticleListHtml}</main></div>`;
     
     const finalHtml = cleanHtmlTemplate.replace('<!-- META -->', metaHtml + '\n' + authorSchemaHtml).replace('<div id="root"></div>', authorBodyContent);
     const outDir = path.join(DIST_DIR, 'author', author.slug.current);
@@ -375,7 +375,7 @@ async function run() {
       pageContentHtml = toHTML(page.body);
     }
 
-    const bodyContent = `<div id="root"><main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12"><h1>${page.title}</h1>${pageContentHtml}</main></div>`;
+    const bodyContent = `<div id="root"><main id="main-content" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12"><h1>${page.title}</h1>${pageContentHtml}</main></div>`;
     const pageSchema = [
       {
         "@context": "https://schema.org",
@@ -408,9 +408,8 @@ async function run() {
       <title>Page Not Found | The Daily Pulse</title>
       <meta name="description" content="The page you are looking for does not exist on The Daily Pulse." />
       <meta name="robots" content="noindex, nofollow" />
-      <link rel="canonical" href="${SITE_URL}/404" />
     `)
-    .replace('<div id="root"></div>', '<div id="root"><main style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:system-ui,-apple-system,sans-serif;padding:2rem;text-align:center;"><h1 style="font-size:6rem;margin:0;color:#D42D2D;">404</h1><p style="font-size:1.25rem;color:#475569;margin:0.5rem 0 2rem;">Page Not Found</p><a href="/" style="display:inline-block;background:#D42D2D;color:white;padding:0.75rem 1.5rem;border-radius:0.5rem;text-decoration:none;font-weight:600;">Back to Home</a></main></div>');
+    .replace('<div id="root"></div>', '<div id="root"><main id="main-content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:system-ui,-apple-system,sans-serif;padding:2rem;text-align:center;"><h1 style="font-size:6rem;margin:0;color:#D42D2D;">404</h1><p style="font-size:1.25rem;color:#475569;margin:0.5rem 0 2rem;">Page Not Found</p><a href="/" style="display:inline-block;background:#D42D2D;color:white;padding:0.75rem 1.5rem;border-radius:0.5rem;text-decoration:none;font-weight:600;">Back to Home</a></main></div>');
   fs.writeFileSync(path.join(DIST_DIR, '404.html'), notFoundHtml);
 
   // 6. Add canonical link to homepage
@@ -460,7 +459,7 @@ async function run() {
       <p>${article.excerpt || ''}</p>
     </article>
   `).join('');
-  const homepageBodyContent = `<div id="root"><main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"><h1>The Daily Pulse - Latest News</h1>${allArticleListHtml}</main></div>`;
+  const homepageBodyContent = `<div id="root"><main id="main-content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"><h1>The Daily Pulse - Latest News</h1>${allArticleListHtml}</main></div>`;
 
   const homepageFinal = homepageCleaned.replace('<!-- META -->', homepageMeta + '\n' + homepageSchemaHtml).replace('<div id="root"></div>', homepageBodyContent);
   fs.writeFileSync(INDEX_HTML_PATH, homepageFinal);

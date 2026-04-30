@@ -322,7 +322,7 @@ export default function ArticlePage() {
               {filteredRelated.length > 0 && (
                 <div>
                   <h3 className="text-sm font-bold uppercase tracking-widest text-slate-500 mb-4 border-b border-slate-200 dark:border-slate-700 pb-2">
-                    Related
+                    More Stories
                   </h3>
                   <ul className="space-y-4">
                     {filteredRelated.map((r: any) => {
