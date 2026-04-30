@@ -291,7 +291,18 @@ async function run() {
       }
     ];
     const categorySchemaHtml = categorySchema.map(s => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join('\n');
-    const finalHtml = cleanHtmlTemplate.replace('<!-- META -->', metaHtml + '\n' + categorySchemaHtml);
+    
+    // Inject article links for category page SEO
+    const categoryArticles = articles.filter(a => a.category?.slug?.current === category.slug.current);
+    const categoryArticleListHtml = categoryArticles.map(article => `
+      <article>
+        <h2><a href="/article/${article.slug.current}">${article.title}</a></h2>
+        <p>${article.excerpt || ''}</p>
+      </article>
+    `).join('');
+    const categoryBodyContent = `<div id="root"><main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"><h1>${category.name} News</h1>${categoryArticleListHtml}</main></div>`;
+    
+    const finalHtml = cleanHtmlTemplate.replace('<!-- META -->', metaHtml + '\n' + categorySchemaHtml).replace('<div id="root"></div>', categoryBodyContent);
     const outDir = path.join(DIST_DIR, 'category', category.slug.current);
     ensureDirSync(outDir);
     fs.writeFileSync(path.join(outDir, 'index.html'), finalHtml);
@@ -329,7 +340,18 @@ async function run() {
       }
     ];
     const authorSchemaHtml = authorSchema.map(s => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join('\n');
-    const finalHtml = cleanHtmlTemplate.replace('<!-- META -->', metaHtml + '\n' + authorSchemaHtml);
+    
+    // Inject article links for author page SEO
+    const authorArticles = articles.filter(a => a.author?.slug?.current === author.slug.current);
+    const authorArticleListHtml = authorArticles.map(article => `
+      <article>
+        <h2><a href="/article/${article.slug.current}">${article.title}</a></h2>
+        <p>${article.excerpt || ''}</p>
+      </article>
+    `).join('');
+    const authorBodyContent = `<div id="root"><main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"><h1>Articles by ${author.name}</h1>${authorArticleListHtml}</main></div>`;
+    
+    const finalHtml = cleanHtmlTemplate.replace('<!-- META -->', metaHtml + '\n' + authorSchemaHtml).replace('<div id="root"></div>', authorBodyContent);
     const outDir = path.join(DIST_DIR, 'author', author.slug.current);
     ensureDirSync(outDir);
     fs.writeFileSync(path.join(outDir, 'index.html'), finalHtml);
@@ -432,7 +454,15 @@ async function run() {
     .replace(/<meta name="twitter:.*?>/ig, '')
     .replace(/<link rel="canonical"[^>]*>/ig, '');
 
-  const homepageFinal = homepageCleaned.replace('<!-- META -->', homepageMeta + '\n' + homepageSchemaHtml);
+  const allArticleListHtml = articles.map(article => `
+    <article>
+      <h2><a href="/article/${article.slug.current}">${article.title}</a></h2>
+      <p>${article.excerpt || ''}</p>
+    </article>
+  `).join('');
+  const homepageBodyContent = `<div id="root"><main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"><h1>The Daily Pulse - Latest News</h1>${allArticleListHtml}</main></div>`;
+
+  const homepageFinal = homepageCleaned.replace('<!-- META -->', homepageMeta + '\n' + homepageSchemaHtml).replace('<div id="root"></div>', homepageBodyContent);
   fs.writeFileSync(INDEX_HTML_PATH, homepageFinal);
 
   console.log('[Prerender] Done generating static files for SEO.');
