@@ -137,19 +137,32 @@ export default function HomePage() {
 
   const mappedArticles = articles.map(mapArticle);
 
+  const usedArticleIds = new Set<string>();
+
   const featuredArticle = mappedArticles[0];
+  if (featuredArticle) usedArticleIds.add(featuredArticle.id);
+
   const latestArticles = mappedArticles.slice(1, 4);
+  latestArticles.forEach(a => usedArticleIds.add(a.id));
+
   const noteworthyReads = mappedArticles.slice(4, 9);
+  noteworthyReads.forEach(a => usedArticleIds.add(a.id));
   
   const categorySections = categories.map(cat => {
     if (!cat || !cat.name) return null;
-    const catArticles = mappedArticles.filter(a => a.category?.name === cat.name).slice(0, 3);
+    const catArticles = mappedArticles
+      .filter(a => a.category?.name === cat.name && !usedArticleIds.has(a.id))
+      .slice(0, 3);
+      
+    catArticles.forEach(a => usedArticleIds.add(a.id));
     return {
       name: cat.name,
       href: `/category/${cat.slug?.current || cat.name.toLowerCase()}`,
       articles: catArticles
     };
   }).filter((section): section is any => section !== null && section.articles.length > 0);
+
+  const editorsPicks = mappedArticles.filter(a => !usedArticleIds.has(a.id)).slice(0, 3);
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
@@ -294,7 +307,7 @@ export default function HomePage() {
               </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {mappedArticles.slice(4, 7).map((article) => (
+              {editorsPicks.map((article) => (
                 <Link
                   key={article.id}
                   to={`/article/${article.slug}`}
