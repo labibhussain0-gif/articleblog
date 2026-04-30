@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import api from '../services/api';
+import { Helmet } from 'react-helmet-async';
 
 export default function Profile() {
   const { username } = useParams<{ username: string }>();
@@ -18,6 +19,10 @@ export default function Profile() {
 
   return (
     <div className="max-w-3xl mx-auto py-12">
+      <Helmet>
+        <title>{user?.name || 'Profile'} | The Daily Pulse</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       <div className="flex items-center gap-8 mb-12">
         <img 
           src={user?.avatarUrl || `https://ui-avatars.com/api/?name=${user?.name}&size=128`} 

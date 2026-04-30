@@ -7,6 +7,16 @@
       "**/node_modules/**"
     ],
     "cleanUrls": true,
+    "redirects": [
+      {
+        "source": "/**",
+        "destination": "https://articleblogwebsite.web.app/:splat",
+        "type": 301,
+        "condition": {
+          "host": "www.articleblogwebsite.web.app"
+        }
+      }
+    ],
     "trailingSlash": false,
     "headers": [
       {

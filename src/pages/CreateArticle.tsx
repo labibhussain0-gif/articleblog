@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { Helmet } from 'react-helmet-async';
 
 const articleSchema = z.object({
   title: z.string().min(5),
@@ -31,6 +32,10 @@ export default function CreateArticle() {
 
   return (
     <div className="max-w-4xl mx-auto py-8">
+      <Helmet>
+        <title>Write Article | The Daily Pulse</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       <h1 className="text-3xl font-bold mb-8 dark:text-white">Write a new article</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div>

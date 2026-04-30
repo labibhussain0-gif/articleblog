@@ -84,7 +84,7 @@ async function run() {
   const baseHtml = fs.readFileSync(INDEX_HTML_PATH, 'utf-8');
 
   // Replace default meta tags block with a comment placeholder so it's easy to replace
-  const cleanHtmlTemplate = baseHtml.replace(/<title>.*?<\/title>/ims, '<!-- META -->')
+  const cleanHtmlTemplate = baseHtml.replace(/<title[^>]*>.*?<\/title>/ims, '<!-- META -->')
                                     .replace(/<meta name="description".*?>/i, '')
                                     .replace(/<meta property="og:.*?>/ig, '')
                                     .replace(/<meta name="twitter:.*?>/ig, '')
@@ -200,6 +200,33 @@ async function run() {
     if (article.faq && Array.isArray(article.faq) && article.faq.length > 0 && article.body) {
       const faqQuestions = new Set(article.faq.map((q: any) => (q.question || '').trim()));
       const blocks = article.body as any[];
+      const indicesToRemove = new Set<number>();
+      let skipNormal = false;
+
+      for (let i = 0; i < blocks.length; i++) {
+        const block = blocks[i];
+        if (block._type !== 'block') continue;
+
+        const isHeading = block.style === 'h2' || block.style === 'h3' || block.style === 'h4';
+        const text = (block.children || []).map((c: any) => c.text || '').join('').trim();
+
+        if (isHeading && faqQuestions.has(text)) {
+          skipNormal = true;
+          indicesToRemove.add(i);
+        } else if (isHeading) {
+          skipNormal = false;
+        } else if (skipNormal && block.style === 'normal') {
+          indicesToRemove.add(i);
+        }
+      }
+
+      filteredBody = blocks.filter((_: any, i: number) => !indicesToRemove.has(i));
+    }
+
+    // Also filter auto-extracted FAQs from body to avoid duplicate headings
+    if (parsedFaqs.length > 0 && !(article.faq && Array.isArray(article.faq) && article.faq.length > 0) && article.body) {
+      const faqQuestions = new Set(parsedFaqs.map((q: any) => (q.question || '').trim()));
+      const blocks = (filteredBody || article.body) as any[];
       const indicesToRemove = new Set<number>();
       let skipNormal = false;
 
@@ -447,7 +474,7 @@ async function run() {
   const homepageSchemaHtml = homepageSchemas.map(s => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join('\n');
 
   let homepageCleaned = homepageHtml
-    .replace(/<title>.*?<\/title>/ims, '<!-- META -->')
+    .replace(/<title[^>]*>.*?<\/title>/ims, '<!-- META -->')
     .replace(/<meta name="description".*?>/i, '')
     .replace(/<meta property="og:.*?>/ig, '')
     .replace(/<meta name="twitter:.*?>/ig, '')
