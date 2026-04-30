@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { createClient } from '@sanity/client';
+import urlBuilder from '@sanity/image-url';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 
@@ -21,10 +22,16 @@ const sanityClient = createClient({
   perspective: 'published',
 });
 
+const builder = urlBuilder(sanityClient);
+function urlFor(source: any) {
+  if (!source || !source.asset) return null;
+  return builder.image(source).url();
+}
+
 async function generateSitemap() {
   console.log('[Sitemap] Fetching data for sitemap...');
   
-  const articles = await sanityClient.fetch(`*[_type == "article" && status == "published"] { slug, publishedAt, _updatedAt }`);
+  const articles = await sanityClient.fetch(`*[_type == "article" && status == "published"] { slug, title, publishedAt, _updatedAt, coverImage }`);
   const categories = await sanityClient.fetch(`*[_type == "category"] { 
     slug, 
     "latestArticleDate": *[_type == "article" && category._ref == ^._id && status == "published"] | order(publishedAt desc)[0].publishedAt 
@@ -37,7 +44,11 @@ async function generateSitemap() {
   const xmlLines: string[] = [
     `<?xml version="1.0" encoding="UTF-8"?>`,
     `<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>`,
-    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"`,
+    `        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"`,
+    `        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"`,
+    `        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"`,
+    `        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd http://www.google.com/schemas/sitemap-image/1.1 http://www.google.com/schemas/sitemap-image/1.1/sitemap-image.xsd http://www.google.com/schemas/sitemap-news/0.9 http://www.google.com/schemas/sitemap-news/0.9/sitemap-news.xsd">`
   ];
 
   // Static routes
@@ -70,6 +81,41 @@ async function generateSitemap() {
       urlBlock += `    <lastmod>${new Date(article.publishedAt).toISOString()}</lastmod>\n`;
     }
     urlBlock += `    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n`;
+    
+    // Add image if available
+    const imgUrl = urlFor(article.coverImage);
+    if (imgUrl) {
+      // Escape ampersands for valid XML
+      const escapedImgUrl = imgUrl.replace(/&/g, '&amp;');
+      urlBlock += `    <image:image>\n      <image:loc>${escapedImgUrl}</image:loc>\n`;
+      if (article.title) {
+        // Escape special chars in title
+        const escapedTitle = article.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+        urlBlock += `      <image:title>${escapedTitle}</image:title>\n`;
+      }
+      urlBlock += `    </image:image>\n`;
+    }
+
+    // Add news tags if published recently (within last 2 days)
+    if (article.publishedAt) {
+      const pubDate = new Date(article.publishedAt);
+      const now = new Date();
+      const diffTime = Math.abs(now.getTime() - pubDate.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays <= 2 && article.title) {
+        const escapedTitle = article.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+        urlBlock += `    <news:news>\n`;
+        urlBlock += `      <news:publication>\n`;
+        urlBlock += `        <news:name>The Daily Pulse</news:name>\n`;
+        urlBlock += `        <news:language>en</news:language>\n`;
+        urlBlock += `      </news:publication>\n`;
+        urlBlock += `      <news:publication_date>${pubDate.toISOString()}</news:publication_date>\n`;
+        urlBlock += `      <news:title>${escapedTitle}</news:title>\n`;
+        urlBlock += `    </news:news>\n`;
+      }
+    }
+
     urlBlock += `  </url>`;
     xmlLines.push(urlBlock);
   }
