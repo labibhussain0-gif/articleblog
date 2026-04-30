@@ -41,8 +41,7 @@ export default function FeaturedCard({ article }: FeaturedCardProps) {
 
             {/* Headline */}
             <h2
-              className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight group-hover:text-amber-400 transition-colors"
-              style={{ fontFamily: 'var(--font-heading)' }}
+              className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight group-hover:text-amber-400 transition-colors font-heading"
             >
               {article.title}
             </h2>

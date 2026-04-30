@@ -19,6 +19,8 @@ export const portableTextComponents = {
           <img
             src={src}
             alt={value?.alt || ''}
+            loading="lazy"
+            decoding="async"
             className="w-full rounded-xl object-cover"
           />
           {value?.caption && (

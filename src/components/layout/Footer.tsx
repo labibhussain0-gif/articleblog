@@ -51,11 +51,11 @@ if (!email) return;
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
-              <h3 className="text-xl font-bold text-white mb-2" style={{ fontFamily: 'var(--font-heading)' }}>
+              <h3 className="text-xl font-bold text-white mb-2 font-heading">
                 Stay Informed
               </h3>
               <p className="text-slate-400">
-                Get the latest stories delivered to your inbox every morning.
+                Get the <strong>latest stories</strong> delivered to your inbox every morning.
               </p>
             </div>
             {subscribed ? (
@@ -103,6 +103,7 @@ if (!email) return;
                 <li key={cat.name}>
                   <Link
                     to={cat.href}
+                    title={`View ${cat.name}`}
                     className="text-slate-400 hover:text-white transition-colors"
                   >
                     {cat.name}
@@ -120,6 +121,7 @@ if (!email) return;
                 <li key={link.name}>
                   <Link
                     to={link.href}
+                    title={`Read ${link.name}`}
                     className="text-slate-400 hover:text-white transition-colors"
                   >
                     {link.name}
@@ -137,6 +139,7 @@ if (!email) return;
                 <li key={item.name}>
                   <Link
                     to={item.href}
+                    title={item.name}
                     className="text-slate-400 hover:text-white transition-colors"
                   >
                     {item.name}

@@ -40,8 +40,7 @@ export default function StandardCard({ article }: StandardCardProps) {
         {/* Content */}
         <div className="p-5 flex-1 flex flex-col">
           <h3
-            className="text-lg font-bold text-slate-900 dark:text-white mb-3 leading-snug group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors line-clamp-2"
-            style={{ fontFamily: 'var(--font-heading)' }}
+            className="text-lg font-bold text-slate-900 dark:text-white mb-3 leading-snug group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors line-clamp-2 font-heading"
           >
             {article.title}
           </h3>

@@ -69,8 +69,8 @@ export default function StickyHeader() {
           {/* Logo */}
           <Link
             to="/"
-            className="text-2xl md:text-3xl font-bold tracking-normal"
-            style={{ fontFamily: 'var(--font-heading)' }}
+            title="The Daily Pulse Home"
+            className="text-2xl md:text-3xl font-bold tracking-normal font-heading"
           >
             <span className="text-red-700">The Daily</span>
             <span className="text-amber-500"> Pulse</span>
@@ -82,6 +82,7 @@ export default function StickyHeader() {
               <Link
                 key={link.name}
                 to={link.href}
+                title={`Read ${link.name} News`}
                 className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${location.pathname === link.href || location.pathname.startsWith(link.href)
                   ? 'bg-red-700 text-white dark:bg-red-900/40 dark:text-red-400'
                   : 'bg-slate-700 text-white dark:bg-slate-700 dark:text-white hover:bg-red-700 hover:text-white dark:hover:bg-red-900/30 dark:hover:text-red-400'
@@ -118,6 +119,7 @@ export default function StickyHeader() {
               <Link
                 key={link.name}
                 to={link.href}
+                title={`Read ${link.name} News`}
                 className={`block px-4 py-3 rounded-full text-base font-medium transition-colors ${location.pathname === link.href || location.pathname.startsWith(link.href)
                   ? 'bg-red-700 text-white dark:bg-red-900/40 dark:text-red-400'
                   : 'bg-slate-700 text-white dark:bg-slate-700 dark:text-white hover:bg-red-700 hover:text-white dark:hover:bg-red-900/30 dark:hover:text-red-400'

@@ -205,7 +205,7 @@ export default function ArticlePage() {
               {article.category.name}
             </span>
           )}
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-6 leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-6 leading-tight font-heading">
             {article.title}
           </h1>
           <p className="text-xl text-slate-600 dark:text-slate-300 mb-8">{article.excerpt}</p>
@@ -213,7 +213,7 @@ export default function ArticlePage() {
           {/* Author & Meta */}
           <div className="flex items-center justify-between">
             <Link to={`/author/${article.author?.slug?.current || '#'}`} className="flex items-center gap-4">
-              <img src={authorAvatarUrl} alt={article.author?.name} width={48} height={48} className="w-12 h-12 rounded-full object-cover" />
+              <img src={authorAvatarUrl} alt="" width={48} height={48} className="w-12 h-12 rounded-full object-cover" />
               <div>
                 <p className="font-semibold text-slate-900 dark:text-white">By {article.author?.name}</p>
               </div>
@@ -305,7 +305,7 @@ export default function ArticlePage() {
 
         {/* Newsletter Capture */}
         <div className="mt-12 p-8 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-          <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2" style={{ fontFamily: 'var(--font-heading)' }}>Subscribe to The Daily Pulse</h3>
+          <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2 font-heading">Subscribe to The Daily Pulse</h3>
           <p className="text-slate-600 dark:text-slate-300 mb-6">Get the latest news and analysis delivered directly to your inbox.</p>
           <NewsletterForm />
         </div>
@@ -372,7 +372,7 @@ export default function ArticlePage() {
       {filteredRelated.length > 0 && (
         <section className="bg-slate-50 dark:bg-slate-800/50 py-16 border-t border-slate-200 dark:border-slate-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-8" style={{ fontFamily: 'var(--font-heading)' }}>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-8 font-heading">
               Related Articles
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

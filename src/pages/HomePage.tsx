@@ -248,7 +248,7 @@ export default function HomePage() {
             <div className="lg:col-span-1">
               <div className="bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 rounded-xl p-6 h-full flex flex-col justify-center">
                 <Mail className="w-10 h-10 mb-4 text-slate-400" />
-                <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white" style={{ fontFamily: 'var(--font-heading)' }}>
+                <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white font-heading">
                   Get the Daily Briefing
                 </h3>
                 <p className="text-slate-600 dark:text-slate-300 text-sm mb-4">
@@ -269,8 +269,7 @@ export default function HomePage() {
             <section className="mb-12">
             <div className="flex items-center justify-between mb-6">
               <h2
-                className="text-2xl font-bold text-slate-900 dark:text-white"
-                style={{ fontFamily: 'var(--font-heading)' }}
+                className="text-2xl font-bold text-slate-900 dark:text-white font-heading"
               >
                 {section.name}
               </h2>
@@ -302,7 +301,7 @@ export default function HomePage() {
               <span className="px-3 py-1 text-xs font-semibold bg-amber-500 text-slate-900 rounded-full uppercase tracking-wide">
                 Investigation
               </span>
-              <h2 className="text-2xl font-bold" style={{ fontFamily: 'var(--font-heading)' }}>
+              <h2 className="text-2xl font-bold font-heading">
                 Editor's Picks
               </h2>
             </div>
@@ -328,8 +327,7 @@ export default function HomePage() {
                     {article.category.name}
                   </span>
                   <h3
-                    className="font-bold text-white group-hover:text-amber-400 transition-colors mt-1"
-                    style={{ fontFamily: 'var(--font-heading)' }}
+                    className="font-bold text-white group-hover:text-amber-400 transition-colors mt-1 font-heading"
                   >
                     {article.title}
                   </h3>

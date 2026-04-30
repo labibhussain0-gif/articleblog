@@ -58,17 +58,17 @@ function generateMetaTags(options: any) {
     <title data-rh="true">${title} | The Daily Pulse</title>
     <meta data-rh="true" name="description" content="${description}" />
     <link data-rh="true" rel="canonical" href="${url}" />
-    <meta property="og:title" content="${title}" />
-    <meta property="og:description" content="${description}" />
-    <meta property="og:type" content="${type}" />
-    <meta property="og:url" content="${url}" />
-    <meta property="og:locale" content="en_US" />
-    <meta property="og:site_name" content="The Daily Pulse" />
-    ${imageUrl ? `<meta property="og:image" content="${imageUrl}" />` : ''}
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="${title}" />
-    <meta name="twitter:description" content="${description}" />
-    ${imageUrl ? `<meta name="twitter:image" content="${imageUrl}" />` : ''}
+    <meta data-rh="true" property="og:title" content="${title} | The Daily Pulse" />
+    <meta data-rh="true" property="og:description" content="${description}" />
+    <meta data-rh="true" property="og:type" content="${type}" />
+    <meta data-rh="true" property="og:url" content="${url}" />
+    <meta data-rh="true" property="og:locale" content="en_US" />
+    <meta data-rh="true" property="og:site_name" content="The Daily Pulse" />
+    ${imageUrl ? `<meta data-rh="true" property="og:image" content="${imageUrl}" />` : ''}
+    <meta data-rh="true" name="twitter:card" content="summary_large_image" />
+    <meta data-rh="true" name="twitter:title" content="${title} | The Daily Pulse" />
+    <meta data-rh="true" name="twitter:description" content="${description}" />
+    ${imageUrl ? `<meta data-rh="true" name="twitter:image" content="${imageUrl}" />` : ''}
   `;
 }
 
@@ -266,7 +266,7 @@ async function run() {
             if (!src) return '';
             return `
               <figure class="my-8">
-                <img src="${src}" alt="${value?.alt || ''}" class="w-full rounded-xl object-cover" />
+                <img src="${src}" alt="${value?.alt || ''}" loading="lazy" decoding="async" class="w-full rounded-xl object-cover" />
                 ${value?.caption ? `<figcaption class="mt-2 text-sm text-center text-slate-500 dark:text-slate-400 italic">${value.caption}</figcaption>` : ''}
               </figure>
             `;

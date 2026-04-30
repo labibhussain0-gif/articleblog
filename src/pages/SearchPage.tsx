@@ -98,7 +98,7 @@ export default function SearchPage() {
                       )}
                       <span className="text-xs text-slate-500">{format(new Date(article.publishedAt || Date.now()), 'MMM d, yyyy')}</span>
                     </div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 line-clamp-1" style={{ fontFamily: 'var(--font-heading)' }}>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 line-clamp-1 font-heading">
                       {article.title}
                     </h3>
                     <p className="text-slate-600 dark:text-slate-300 text-sm line-clamp-2">{article.excerpt}</p>

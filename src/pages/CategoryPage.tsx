@@ -109,7 +109,7 @@ export default function CategoryPage() {
             >
               {meta.name}
             </span>
-            <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4" style={{ fontFamily: 'var(--font-heading)' }}>
+            <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4 font-heading">
               {meta.name}
             </h1>
             <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
@@ -164,13 +164,13 @@ export default function CategoryPage() {
                     )}
                   </div>
                   <div className="p-5">
-                    <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors line-clamp-2" style={{ fontFamily: 'var(--font-heading)' }}>
+                    <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors line-clamp-2 font-heading">
                       {article.title}
                     </h2>
                     <p className="text-slate-600 dark:text-slate-300 text-sm mb-4 line-clamp-2">{article.excerpt}</p>
                     <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                       <div className="flex items-center gap-2">
-                        <img src={avatarUrl} alt={article.author?.name} width={24} height={24} className="w-6 h-6 rounded-full object-cover" />
+                        <img src={avatarUrl} alt="" width={24} height={24} className="w-6 h-6 rounded-full object-cover" />
                         <span>{article.author?.name || 'Unknown Author'}</span>
                       </div>
                       <div className="flex items-center gap-3">

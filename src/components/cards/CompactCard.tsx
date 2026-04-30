@@ -37,8 +37,7 @@ export default function CompactCard({ article }: CompactCardProps) {
         </span>
         <Link to={`/article/${article.slug}`}>
           <h4
-            className="font-semibold text-slate-900 dark:text-white leading-snug group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors line-clamp-2"
-            style={{ fontFamily: 'var(--font-heading)' }}
+            className="font-semibold text-slate-900 dark:text-white leading-snug group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors line-clamp-2 font-heading"
           >
             {article.title}
           </h4>

@@ -1,15 +1,15 @@
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+import SEOHead from '../components/SEOHead';
 import { ChevronRight } from 'lucide-react';
 
 export default function CookiePolicyPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
-      <Helmet>
-        <title>Cookie Policy | The Daily Pulse</title>
-        <meta name="description" content="Understand how The Daily Pulse uses cookies, including essential, analytics, and advertising cookies like Google AdSense." />
-        <link rel="canonical" href="https://articleblogwebsite.web.app/cookies" />
-      </Helmet>
+      <SEOHead 
+        title="Cookie Policy" 
+        description="Understand how The Daily Pulse uses cookies, including essential, analytics, and advertising cookies like Google AdSense." 
+        url="https://articleblogwebsite.web.app/cookies" 
+      />
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 xl:pl-24 py-8">
         <nav className="flex items-center gap-2 text-sm text-slate-500 mb-6">
           <Link to="/" className="hover:text-slate-900 dark:hover:text-white">Home</Link>
@@ -18,7 +18,7 @@ export default function CookiePolicyPage() {
         </nav>
         
         <header className="mb-10">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-6 leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white mb-6 leading-tight font-heading">
             Cookie Policy
           </h1>
           <p className="text-sm text-slate-500">Last updated: {new Date().toLocaleDateString()}</p>

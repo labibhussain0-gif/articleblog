@@ -29,7 +29,6 @@ export default function SEOHead({
   return (
     <Helmet>
       <title>{fullTitle}</title>
-      <meta name="title" content={fullTitle} />
       <meta name="description" content={truncatedDesc} />
       <meta property="og:type" content={type} />
       <meta property="og:url" content={url} />

@@ -69,7 +69,7 @@ const pageUrl = `${SITE_URL}/${slug}`;
           <ChevronRight className="w-4 h-4" />
           <span className="text-slate-900 dark:text-white">{page.title}</span>
         </nav>
-        <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6" style={{ fontFamily: 'var(--font-heading)' }}>
+        <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6 font-heading">
           {page.title}
         </h1>
         {page.description && (

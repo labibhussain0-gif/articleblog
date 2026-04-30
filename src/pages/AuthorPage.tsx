@@ -83,9 +83,9 @@ export default function AuthorPage() {
       <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex flex-col md:flex-row items-center gap-8">
-            <img src={avatarUrl} alt={author.name} width={128} height={128} className="w-32 h-32 rounded-full border-4 border-white dark:border-slate-700 shadow-lg object-cover" />
+            <img src={avatarUrl} alt={`Profile photo of ${author.name}`} width={128} height={128} className="w-32 h-32 rounded-full border-4 border-white dark:border-slate-700 shadow-lg object-cover" />
             <div className="text-center md:text-left flex-1">
-              <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2" style={{ fontFamily: 'var(--font-heading)' }}>
+              <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2 font-heading">
                 {author.name}
               </h1>
               <p className="text-slate-500 dark:text-slate-400 mb-4">@{author.slug?.current || author.name.toLowerCase().replace(/\s+/g, '')}</p>
@@ -135,7 +135,7 @@ export default function AuthorPage() {
 
       {/* Articles Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6" style={{ fontFamily: 'var(--font-heading)' }}>
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 font-heading">
           Published Articles
         </h2>
         {articles.length === 0 ? (
@@ -153,7 +153,7 @@ export default function AuthorPage() {
                       <img src={imgUrl} alt={article.title} width={600} height={375} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                     </div>
                     <div className="p-5">
-                      <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors line-clamp-2" style={{ fontFamily: 'var(--font-heading)' }}>
+                      <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors line-clamp-2 font-heading">
                         {article.title}
                       </h3>
                       <p className="text-slate-600 dark:text-slate-300 text-sm mb-4 line-clamp-2">{article.excerpt}</p>
