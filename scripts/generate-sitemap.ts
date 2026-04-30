@@ -36,23 +36,26 @@ async function generateSitemap() {
 
   const xmlLines: string[] = [
     `<?xml version="1.0" encoding="UTF-8"?>`,
+    `<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>`,
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`
   ];
 
   // Static routes
   const staticRoutes = [
-    { url: '/' },
-    { url: '/about' },
-    { url: '/contact' },
-    { url: '/privacy' },
-    { url: '/terms' },
-    { url: '/cookies' },
+    { url: '/', priority: '1.0', changefreq: 'daily' },
+    { url: '/about', priority: '0.8', changefreq: 'monthly' },
+    { url: '/contact', priority: '0.8', changefreq: 'monthly' },
+    { url: '/privacy', priority: '0.5', changefreq: 'yearly' },
+    { url: '/terms', priority: '0.5', changefreq: 'yearly' },
+    { url: '/cookies', priority: '0.5', changefreq: 'yearly' },
   ];
 
   for (const route of staticRoutes) {
     xmlLines.push(
       `  <url>\n` +
       `    <loc>${SITE_URL}${route.url}</loc>\n` +
+      `    <changefreq>${route.changefreq}</changefreq>\n` +
+      `    <priority>${route.priority}</priority>\n` +
       `  </url>`
     );
   }
@@ -66,6 +69,7 @@ async function generateSitemap() {
     } else if (article.publishedAt) {
       urlBlock += `    <lastmod>${new Date(article.publishedAt).toISOString()}</lastmod>\n`;
     }
+    urlBlock += `    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n`;
     urlBlock += `  </url>`;
     xmlLines.push(urlBlock);
   }
@@ -77,6 +81,7 @@ async function generateSitemap() {
     if (category.latestArticleDate) {
       catBlock += `    <lastmod>${new Date(category.latestArticleDate).toISOString()}</lastmod>\n`;
     }
+    catBlock += `    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n`;
     catBlock += `  </url>`;
     xmlLines.push(catBlock);
   }
@@ -88,6 +93,7 @@ async function generateSitemap() {
     if (author.latestArticleDate) {
       authBlock += `    <lastmod>${new Date(author.latestArticleDate).toISOString()}</lastmod>\n`;
     }
+    authBlock += `    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n`;
     authBlock += `  </url>`;
     xmlLines.push(authBlock);
   }
